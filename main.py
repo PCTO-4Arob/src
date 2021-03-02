@@ -85,7 +85,7 @@ while True:
                 cv2.putText(frame, "Triangle", (x, y), font, 1, (0, 0, 0))
                 
             elif len(approx1) == 4:
-                if 
+                #if 
                 cv2.putText(frame, "Rectangle", (x, y), font, 1, (0, 0, 0))
                 minute1 = int(time.strftime('%M'))
                 second1 = int(time.strftime('%S'))
