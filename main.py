@@ -1,78 +1,77 @@
 from threading import Thread
 import threading
-
 import time
+
+from Libraries.traceTest import objectTracking
 
 threadLock = threading.Lock() #sync thread 
 
-global handX, handY
-
-class HandRecon(Thread):
+class ObjectRecon(Thread):
     def __init__(self, nome):
         Thread.__init__(self)
         self.nome = nome
-        #self.durata = 5
+        self.durata = 5
+        self.tempCord = []
 
     def run(self):
-        global handX, handY
-
         print("start capture...")
-
-        threadLock.acquire()
         
+        threadLock.acquire()
+        self.tempCord = objectTracking()
+        time.sleep(self.durata)
         threadLock.release()
 
-class GraphicInterface(Thread):
+    def getCord(self):
+        return self.tempCord
+
+
+
+class GraphicMenu(Thread):
     def __init__(self, nome):
         Thread.__init__(self)
         self.nome = nome
+        self.initiateGame = False
         #self.durata = 5
 
     def run(self):
-        print("serving graphic...")
+        print("serving graphic menu...")
 
         threadLock.acquire()
 
-        startSpeechToText = #funzione tomatis
-        #generateOperations(1000,600)
+        #self.initiateGame = #funzionetomatis
 
         threadLock.release()
+
+    def getStart(self):
+        return self.initiateGame
+
+class GraphicGame(Thread):
+    def __init__(self,nome):
+        Thread.__init__(self)
+        self.nome = nome
+        self.startGraphic
+    
+    def run(self):
+        print("serving graphic interface...")
+
+        #self.startGraphic = funzione fenoglio
 
 
 def main():
-    global list, text
+    
+    menu = GraphicMenu("startMenu")
 
-    graphic = GraphicInterface("MainGraphicInterface")
-    graphic.start()
+    if menu.initiateGame == True:
+        #chiama parte fenoglio
+        #chiama parte recon
+        #ripeti
 
-    list = []
 
-    speech1 = SpeechToText("sp1")
-    speech2 = SpeechToText("sp2")
-    speech3 = SpeechToText("sp3")
-    speech4 = SpeechToText("sp4")
-    speech5 = SpeechToText("sp5")
 
-    if startSpeechToText == 1:
-        speech1.start()
-        speech1.join()
-        list[0] = text
+    
+    #print(player.getCord())
 
-        speech2.start()
-        speech2.join()
-        list[1] = text
-
-        speech3.start()
-        speech3.join()
-        list[2] = text
-
-        speech4.start()
-        speech4.join()
-        list[3] = text
-
-        speech5.start()
-        speech5.join
-        list[4] = text
+    
 
 
 
