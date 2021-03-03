@@ -183,8 +183,10 @@ def menu():
     #time count how many cicles the program perform
     time = 0
 
+    endProgram = False
+
     #this while loop control the screen animations
-    while True:
+    while not endProgram:
 
         #updates elements
         background.update()
@@ -213,12 +215,15 @@ def menu():
                             btnMode.changeStatus('./sprites/mute.png', x, y, soundTrack, silent)
                         silent = not silent
                     elif value.update(x, y) == True: 
-                        return key
+                        userChoice = key
+                        endProgram = True
+                        
 
         #update screen status
         pygame.display.update()
         time += 1
     
+    return userChoice 
 
 if __name__ == "__main__":
     menu()
