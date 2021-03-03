@@ -7,15 +7,15 @@ recognizer = sr.Recognizer()
 def reconAudio():
 
     with sr.Microphone() as source:
-        print("Adjusting noise ")
+        #print("Adjusting noise ")
         recognizer.adjust_for_ambient_noise(source, duration=1)
-        print("Recording for 4 seconds")
+        #print("Recording for 4 seconds")
         recorded_audio = recognizer.listen(source, timeout=4)
-        print("Done recording")
+        #print("Done recording")
 
     ''' Recorgnizing the Audio '''
     try:
-        print("Recognizing the text")
+        #print("Recognizing the text")
         text = recognizer.recognize_google(
                 recorded_audio, 
                 language="it_EU"
@@ -29,5 +29,4 @@ def reconAudio():
 
     except Exception as ex:
         print(ex)
-
         return False
