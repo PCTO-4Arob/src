@@ -1,6 +1,7 @@
 from threading import Thread
 import threading
 import time
+import sys
 
 from Libraries.traceTest import objectTracking
 
@@ -60,11 +61,23 @@ class GraphicGame(Thread):
 def main():
     
     menu = GraphicMenu("startMenu")
+    graphic = GraphicGame("mainGame")
+    recon = ObjectRecon("mainRecon")
 
-    if menu.initiateGame == True:
-        #chiama parte fenoglio
-        #chiama parte recon
-        #ripeti
+    exitGame = 1
+
+    menu.start()
+    menu.join()
+
+    while exitGame != 0:
+        menu.start()
+        menu.join()
+
+        graphic.start()
+
+        exitGame = menu.initiateGame
+
+    
 
 
 
