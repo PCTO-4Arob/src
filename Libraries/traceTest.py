@@ -59,4 +59,5 @@ def objectTracking():
         cv2.imshow("cam",img)
         cv2.waitKey(10)
     #print(listCord)
+    cv2.destroyAllWindows()
     return listCord
