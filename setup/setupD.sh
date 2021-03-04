@@ -1,9 +1,10 @@
 #!/bin/bash
 
-echo Ubuntu script:
+echo Debian-based script:
 
 echo Refresh repos...
 $(sudo apt update > log.txt 2>&1)
+$(sudo apt autoremove >> log.txt 2>&1)
 
 echo Installing Python...
 $(sudo apt install python3 >> log.txt 2>&1)
