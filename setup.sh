@@ -14,11 +14,13 @@ if [ "${OS}" = "SunOS" ] ; then
 	ARCH=$(uname -p)
 	OSSTR="${OS} ${REV}(${ARCH} $(uname -v)"
   echo ${OSSTR}
+  echo Unsupported
   return
 
 elif [ "${OS}" = "AIX" ] ; then
 	OSSTR="${OS} $(oslevel) ($(oslevel -r)"
   echo ${OSSTR}
+  echo Unsupported
   return
 
 elif [ "${OS}" = "Linux" ] ; then
@@ -27,13 +29,16 @@ elif [ "${OS}" = "Linux" ] ; then
 		DIST='RedHat'
 		PSUEDONAME=$(sed s/.*\(// < /etc/redhat-release | sed s/\)//)
 		REV=$(sed s/.*release\ // < /etc/redhat-release | sed s/\ .*//)
+        echo Unsupported
 	elif [ -f /etc/SuSE-release ] ; then
 		DIST=$(tr "\n" ' ' < /etc/SuSE-release | sed s/VERSION.*//)
 		REV=$(tr "\n" ' ' < /etc/SuSE-release| sed s/.*=\ //)
+        echo Unsupported
 	elif [ -f /etc/mandrake-release ] ; then
 		DIST='Mandrake'
 		PSUEDONAME=$(sed s/.*\(// < /etc/mandrake-release | sed s/\)//)
 		REV=$(sed s/.*release\ // < /etc/mandrake-release | sed s/\ .*//)
+        echo Unsupported
 	elif [ -f /etc/debian_version ] ; then	
 		if [ "$(awk -F= '/DISTRIB_ID/ {print $2}' /etc/lsb-release)" = "Ubuntu" ]; then
 			DIST="Ubuntu"
@@ -81,7 +86,4 @@ elif [ "${OS}" = "Linux" ] ; then
 
 fi
 
-
-# F0ck wind0ws. G0 t0 he11!
-#echo "Your platform ($(uname -a)) is not supported."
 exit 1
