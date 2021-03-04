@@ -1,4 +1,4 @@
-!# /bin/bash
+#!/bin/bash
 
 echo Detecting OS...
 
@@ -19,6 +19,18 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
       $(sudo pip install opencv-python pygame SpeechRecognition numpy)
     fi
   elif [[ ${DISTRIB} = "Debian"* ]]; then
+    echo Refresh Repos...
+    $(sudo apt update)
+    echo Installing Python...
+    $(sudo apt install python3)
+    echo Installing pip...
+    $(sudo apt install python3-pip)
+
+    echo Installing necessary packages...
+    $(sudo pip install opencv-python pygame SpeechRecognition numpy)
+  fi
+
+  elif [[ ${DISTRIB} = "Pop"* ]]; then
     echo Refresh Repos...
     $(sudo apt update)
     echo Installing Python...
