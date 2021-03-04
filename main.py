@@ -1,60 +1,29 @@
 from threading import Thread
 import threading
-
 import time
-from Libraries.reconAudio import reconAudio
-#from startMenu import generateOperations
+import sys
 
-threadLock = threading.Lock() #sync thread 
+from Libraries.traceTest import objectTracking
+from Libraries.startMenu.startMenu import menu
 
-global text #result of speech-to-text func
+def main():
 
-class SpeechToText(Thread):
-    def __init__(self, nome):
-        Thread.__init__(self)
-        self.nome = nome
-        #self.durata = 5
+    exitGame = 1
 
-    def run(self):
-        global text
+    while exitGame != 0:
+       
+        exitGame = menu()
+        if exitGame == 0:
+            exit(0)
 
-        print("start capture...")
-
-        threadLock.acquire()
-        text = reconAudio()
-
-        if text == False:
-            print("Errors has occurred in reconnaissance...")
-
-        threadLock.release()
-
-class GraphicInterface(Thread):
-    def __init__(self, nome):
-        Thread.__init__(self)
-        self.nome = nome
-        #self.durata = 5
-
-    def run(self):
-        print("serving graphic...")
-
-        threadLock.acquire()
-
-        #generateOperations(1000,600)
-
-        threadLock.release()
-
-
-threadRecon = SpeechToText("test1")
-threadGraphic = GraphicInterface("test2")
-
-threadRecon.start()
-threadGraphic.start()
-
-threadRecon.join()
-threadGraphic.join()
-
-print(text)
         
+
+
+
+    
+
+if __name__ == "__main__":
+    main()
 
 
 
