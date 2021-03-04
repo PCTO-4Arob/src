@@ -12,5 +12,5 @@ echo Installing pip...
 $(sudo apt install python3-pip >> log.txt 2>&1)
 
 echo Installing necessary packages:
-$(sudo pip install -r requirements.txt)
+$(sudo pip install -r requirements.txt >> log.txt 2>&1)
 
