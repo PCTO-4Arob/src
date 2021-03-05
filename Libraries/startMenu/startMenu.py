@@ -9,11 +9,14 @@ import pygame, sys, time
 from pygame.locals import *
 import random
 import os
+import speech_recognition as sr
 
 pathname = os.path.dirname(os.path.realpath(__file__))
 
 #pygame initialization
 pygame.init()
+
+recognizer = sr.Recognizer()
 
 
 #----------------------------------------
@@ -114,6 +117,24 @@ class Button():
                 print('error: ', str(e))
 
         screen.blit(self.image, self.rect)
+    
+    def changeStatusTo(self, filepath, soundTrack, silent):
+        
+        soundEffect = pygame.mixer.Sound(os.path.join(pathname, "btnClick.wav"))
+        pygame.mixer.Sound.set_volume(soundEffect,0.5)#0.5 is the volume
+        pygame.mixer.Sound.play(soundEffect,0) #play the track
+            
+        #load a new button image
+        self.image = pygame.image.load(filepath)
+        self.rect = self.image.get_rect()
+        self.rect = self.rect.move(0,self.screen_height)
+        #if the volume is on, it turns it off
+        if not silent:
+            pygame.mixer.Sound.set_volume(soundTrack,0.0)#0.0 is the volume
+        else: #else it turn it on
+            pygame.mixer.Sound.set_volume(soundTrack,0.5)#0.5 is the volume
+        
+        screen.blit(self.image, self.rect)
         
 
 #this class manage the hay on the screen
@@ -188,43 +209,81 @@ def menu():
 
     endProgram = False
 
-    #this while loop control the screen animations
-    while not endProgram:
+    
+    endProgram = False
+    keywords = ["inizia", "esci", "muta", "audio",
+                "Play"]
+    start = False
+    stop = False
+    mute = False
+    volume = False
 
-        #updates elements
-        background.update()
-        title.update()
-        if hay.update(time, width):
-            hay = Hay((width,450))  
-        btnPlay.update(width, height)
-        btnExit.update(width, height)
-        btnMode.update(width, height)
-        
-        
-        for event in pygame.event.get():
-            controlExit(event)
+    with sr.Microphone() as source:
+        #this while loop control the screen animations
+        recognizer.adjust_for_ambient_noise(source, duration=1)
+        while not endProgram and (start or stop == False):
+            #updates elements
+            background.update()
+            title.update()
+            if hay.update(time, width):
+                hay = Hay((width,450))  
+            btnPlay.update(width, height)
+            btnExit.update(width, height)
+            btnMode.update(width, height)
+            
+            
+            for event in pygame.event.get():
+                controlExit(event)
 
-            #if the mouse is pressed it control if it is the case
-            #to change the buttons status
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                # Set the x, y postions of the mouse click
-                for key, value in buttonList.items():
-                    x, y = event.pos
-                    
-                    if key == 2:
-                        if silent:
-                            btnMode.changeStatus(os.path.join(pathname,'sprites/volume.png'), x, y, soundTrack, silent)
-                        else:
-                            btnMode.changeStatus(os.path.join(pathname,'sprites/mute.png'), x, y, soundTrack, silent)
-                        silent = not silent
-                    elif value.update(x, y) == True: 
-                        userChoice = key
-                        endProgram = True
+                #if the mouse is pressed it control if it is the case
+                #to change the buttons status
+                '''
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # Set the x, y postions of the mouse click
+                    for key, value in buttonList.items():
+                        x, y = event.pos
                         
+                        if key == 2:
+                            if silent:
+                                btnMode.changeStatus('./sprites/volume.png', x, y, soundTrack, silent)
+                            else:
+                                btnMode.changeStatus('./sprites/mute.png', x, y, soundTrack, silent)
+                            silent = not silent
+                        elif value.update(x, y) == True: 
+                            userChoice = key
+                            endProgram = True
+                '''         
 
-        #update screen status
-        pygame.display.update()
-        time += 1
+            #update screen status
+            pygame.display.update()
+            time += 1
+
+            try:
+                recorded_audio = recognizer.listen(source, timeout=1)
+
+                text = recognizer.recognize_google(
+                    recorded_audio, 
+                    language="it_EU"
+                )
+                final = text.split(" ")
+
+                if keywords[0] in final or keywords[4] in final:
+                    start = True
+                    endProgram = True
+                    userChoice = 1
+                elif keywords[1] in final:
+                    stop = True
+                    endProgram = True
+                    userChoice = 0
+                elif keywords[2] in final:
+                    btnMode.changeStatusTo(os.path.join(pathname,'sprites/mute.png'), soundTrack, silent)
+                    silent = not silent
+                elif keywords[3] in final:
+                    btnMode.changeStatusTo(os.path.join(pathname,'sprites/volume.png'), soundTrack, silent)
+                    silent = not silent
+            except Exception:
+                pass
+    
     
     pygame.mixer.Sound.stop(soundTrack)
     pygame.display.quit()
