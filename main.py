@@ -1,22 +1,24 @@
-from threading import Thread
-import threading
 import time
 import sys
 
-from Libraries.traceTest import objectTracking
 from Libraries.startMenu.startMenu import menu
+from GraphicMain.gameDesign import graficaPricipale
 
 def main():
 
-    exitGame = 1
+    exitMenu = -1
+    exitGame = -1
 
-    while exitGame != 0:
+
+    while exitMenu != 0:
        
-        exitGame = menu()
-        if exitGame == 0:
+        exitMenu = menu()
+        if exitMenu == 0:
             exit(0)
+        elif exitMenu == 1:
+            while exitGame != 0:
+                exitGame = graficaPricipale()
 
-        
 
 if __name__ == "__main__":
     main()

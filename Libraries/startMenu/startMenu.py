@@ -8,6 +8,9 @@ https://github.com/PCTO-OneTwoCode
 import pygame, sys, time
 from pygame.locals import *
 import random
+import os
+
+pathname = os.path.dirname(os.path.realpath(__file__))
 
 #pygame initialization
 pygame.init()
@@ -21,7 +24,7 @@ pygame.init()
 #This class contains the background method
 class Background():
     #constructor
-    def __init__(self, x, y, filepath='/home/oryzon/Desktop/PCTO/src/Libraries/startMenu/sprites/background.jpg'):
+    def __init__(self, x, y, filepath=os.path.join(pathname, 'sprites/background.jpg')):
         try:
             #load the image
             self.image = pygame.image.load(filepath)
@@ -43,7 +46,7 @@ class Background():
 #this class contain the title displayed on the screen
 class Title():
     #constructor
-    def __init__(self, x, y, filepath='/home/oryzon/Desktop/PCTO/src/Libraries/startMenu/sprites/title.png'):
+    def __init__(self, x, y, filepath=os.path.join(pathname, 'sprites/title.png')):
         try:
             #load the image and move it to the right position
             self.image = pygame.image.load(filepath)
@@ -91,7 +94,7 @@ class Button():
         #if the buttom is pressed change the button status
         if self.rect.collidepoint(x, y):
             #load the button click sound
-            soundEffect = pygame.mixer.Sound("/home/oryzon/Desktop/PCTO/src/Libraries/startMenu/btnClick.wav")
+            soundEffect = pygame.mixer.Sound(os.path.join(pathname, "btnClick.wav"))
             pygame.mixer.Sound.set_volume(soundEffect,0.5)#0.5 is the volume
             pygame.mixer.Sound.play(soundEffect,0) #play the track
             
@@ -116,7 +119,7 @@ class Button():
 #this class manage the hay on the screen
 class Hay(pygame.sprite.Sprite):
     #constructor
-    def __init__(self, pos, filepath='/home/oryzon/Desktop/PCTO/src/Libraries/startMenu/sprites/hayl.png'):
+    def __init__(self, pos, filepath=os.path.join(pathname, 'sprites/hayl.png')):
         #initialize a new sprite
         pygame.sprite.Sprite.__init__(self)
         self.pos = pos
@@ -165,7 +168,7 @@ def menu():
     hay = Hay((width,450))
     
     #initialize sound track
-    soundTrack = pygame.mixer.Sound("/home/oryzon/Desktop/PCTO/src/Libraries/startMenu/startMenu.wav")
+    soundTrack = pygame.mixer.Sound(os.path.join(pathname, "startMenu.wav"))
     pygame.mixer.Sound.set_volume(soundTrack,0.5)#0.5 is the volume
     pygame.mixer.Sound.play(soundTrack,-1)#the -1 let the sound repeates when it ends
     silent = False #this variables control if the screen is muted
@@ -173,9 +176,9 @@ def menu():
     #this dictionary cointains all of the buttons 
     buttonList = {}
 
-    btnPlay = Button('/home/oryzon/Desktop/PCTO/src/Libraries/startMenu/sprites/btnplay.png', width, height//4)
-    btnExit = Button('/home/oryzon/Desktop/PCTO/src/Libraries/startMenu/sprites/btnexit.png', width, btnPlay.getY() + 100)
-    btnMode = Button('/home/oryzon/Desktop/PCTO/src/Libraries/startMenu/sprites/volume.png', width, btnExit.getY() + 100)
+    btnPlay = Button(os.path.join(pathname, 'sprites/btnplay.png'), width, height//4)
+    btnExit = Button(os.path.join(pathname, 'sprites/btnexit.png'), width, btnPlay.getY() + 100)
+    btnMode = Button(os.path.join(pathname, 'sprites/volume.png'), width, btnExit.getY() + 100)
     buttonList[1] = btnPlay 
     buttonList[0] = btnExit
     buttonList[2] = btnMode
@@ -210,9 +213,9 @@ def menu():
                     
                     if key == 2:
                         if silent:
-                            btnMode.changeStatus('/home/oryzon/Desktop/PCTO/src/Libraries/startMenu/sprites/volume.png', x, y, soundTrack, silent)
+                            btnMode.changeStatus(os.path.join(pathname,'sprites/volume.png'), x, y, soundTrack, silent)
                         else:
-                            btnMode.changeStatus('/home/oryzon/Desktop/PCTO/src/Libraries/startMenu/sprites/mute.png', x, y, soundTrack, silent)
+                            btnMode.changeStatus(os.path.join(pathname,'sprites/mute.png'), x, y, soundTrack, silent)
                         silent = not silent
                     elif value.update(x, y) == True: 
                         userChoice = key
