@@ -2,3 +2,4 @@ SpeechRecognition
 numpy
 opencv-python
 pygame
+PyAudio

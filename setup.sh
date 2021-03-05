@@ -1,4 +1,10 @@
 #!/bin/bash
+"""
+Filippo Ferrando
+OneTwoCode
+
+
+"""
 
 OS=`uname -s`
 REV=`uname -r`
@@ -9,7 +15,7 @@ GetVersionFromFile() {
 }
 
 
-if [ "${OS}" = "SunOS" ] ; then
+if [ "${OS}" = "SunOS" ] ; then  #Oracle solaris
 	OS=Solaris
 	ARCH=$(uname -p)
 	OSSTR="${OS} ${REV}(${ARCH} $(uname -v)"
@@ -17,29 +23,19 @@ if [ "${OS}" = "SunOS" ] ; then
   echo Unsupported
   return
 
-elif [ "${OS}" = "AIX" ] ; then
-	OSSTR="${OS} $(oslevel) ($(oslevel -r)"
-  echo ${OSSTR}
-  echo Unsupported
-  return
 
 elif [ "${OS}" = "Linux" ] ; then
 	KERNEL=$(uname -r)
-	if [ -f /etc/redhat-release ] ; then
+	if [ -f /etc/redhat-release ] ; then #RED HAT BASED
 		DIST='RedHat'
 		PSUEDONAME=$(sed s/.*\(// < /etc/redhat-release | sed s/\)//)
 		REV=$(sed s/.*release\ // < /etc/redhat-release | sed s/\ .*//)
         echo Unsupported
-	elif [ -f /etc/SuSE-release ] ; then
+	elif [ -f /etc/SuSE-release ] ; then #SUSE BASED
 		DIST=$(tr "\n" ' ' < /etc/SuSE-release | sed s/VERSION.*//)
 		REV=$(tr "\n" ' ' < /etc/SuSE-release| sed s/.*=\ //)
         echo Unsupported
-	elif [ -f /etc/mandrake-release ] ; then
-		DIST='Mandrake'
-		PSUEDONAME=$(sed s/.*\(// < /etc/mandrake-release | sed s/\)//)
-		REV=$(sed s/.*release\ // < /etc/mandrake-release | sed s/\ .*//)
-        echo Unsupported
-	elif [ -f /etc/debian_version ] ; then	
+	elif [ -f /etc/debian_version ] ; then	  #DEBIAN BASED
 		if [ "$(awk -F= '/DISTRIB_ID/ {print $2}' /etc/lsb-release)" = "Ubuntu" ]; then
 			DIST="Ubuntu"
             echo Debian-based script:
