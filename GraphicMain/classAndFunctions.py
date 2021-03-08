@@ -18,8 +18,6 @@ POSSIBLE_POSITIONS = [(WINDOW_WIDTH/4-200, WINDOW_HEIGHT/4),
                         (WINDOW_WIDTH/4-200, WINDOW_HEIGHT/4*3),
                         (WINDOW_WIDTH/4*3-200, WINDOW_HEIGHT/4),
                         (WINDOW_WIDTH/4*3-200, WINDOW_HEIGHT/4*3)]
-BIANCO = (255,255,255)
-
 
 '''------------------------------
 
