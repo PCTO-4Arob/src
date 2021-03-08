@@ -123,7 +123,7 @@ def final_animation( screen, surf_title, winRed, all_sprites,spr_red, spr_blue,n
 
 
 
-def graficaPricipale(screen):
+def mainGraphic(screen):
     
     lowerBound=np.array([33,80,40])
     upperBound=np.array([102,255,255])
@@ -341,9 +341,7 @@ def graficaPricipale(screen):
             count=0
         
     #end while
-    #pygame.quit()
     
-    #final_animation((spr_blue.rect.x, spr_blue.rect.y), (spr_red.rect.x, spr_red.rect.y), winRed)
     return 0
 #end main
 

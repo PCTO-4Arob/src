@@ -84,39 +84,6 @@ elif [ "${OS}" = "Linux" ] ; then
 	OSSTR="${OS} ${DIST} ${REV}(${PSUEDONAME} ${KERNEL} ${MACH})"
   #echo Your distro: ${OSSTR}
 
-'''
-DEPRECATED NOT WORKING
-
-elif [ "${OS}" == "Darwin" ]; then
-  type -p sw_vers &>/dev/null
-  [ $? -eq 0 ] && {
-    which -s brew
-    if [[$? != 0]]; then
-      echo "Installing Homebrew"
-      $(/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)")
-      $(export PATH="/usr/local/opt/python/libexec/bin:$PATH")
-      $(export PATH=/usr/local/bin:/usr/local/sbin:$PATH)
-    else
-      echo "Updating Homebrew"
-      $(brew update)
-
-    echo "Install python"
-    $(brew install python)
-
-    echo "Install Library"
-    $(pip install -r requirements.txt)
-    
-    #OS=`sw_vers | grep 'ProductName' | cut -f 2`
-    #VER=`sw_vers | grep 'ProductVersion' | cut -f 2`
-    #BUILD=`sw_vers | grep 'BuildVersion' | cut -f 2`
-    #OSSTR="Darwin ${OS} ${VER} ${BUILD}"
-  } || {
-    OSSTR="MacOSX"
-  }
-  echo ${OSSTR}
-  return
-'''
-
 fi
 
 exit 1

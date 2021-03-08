@@ -2,7 +2,7 @@ import time
 import sys
 import pygame
 from Libraries.startMenu.startMenu import menu
-from GraphicMain.gameDesign import graficaPricipale
+from GraphicMain.gameDesign import mainGraphic
 pygame.init()
 
 def main():
@@ -18,8 +18,7 @@ def main():
         if exitMenu == 0:
             exit(0)
         elif exitMenu == 1:
-            while exitGame != 0:
-                exitGame = graficaPricipale(screen)
+            mainGraphic(screen)
 
 
 if __name__ == "__main__":
