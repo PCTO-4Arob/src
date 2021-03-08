@@ -8,7 +8,6 @@ from pygame.locals import *
 from time import sleep
 from GraphicMain.operations import *
 from GraphicMain.classAndFunctions import *
-#from GraphicMain.message import final_animation
 
 import os
 
@@ -236,7 +235,7 @@ def graficaPricipale():
         
     #end while
     
-    final_animation(screen, surf_title, spr_blue, spr_red, winRed, all_sprites)
+    
     return 0
 #end main
 
