@@ -3,6 +3,9 @@ import pygame
 from pygame.locals import *
 #l[0]is the result. l[1][0] and l[1][1] are the addends. l[2] is the sign (as char)
 #l[result,[firstAddend,secondAddend],sign]
+
+BIANCO = (255,255,255)
+
 def createMultiplication(l):
     l[1][0] = random.randint(1,10)
     l[1][1] = random.randint(1,10) 
