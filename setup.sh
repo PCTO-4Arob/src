@@ -1,10 +1,4 @@
 #!/bin/bash
-"""
-Filippo Ferrando
-OneTwoCode
-
-
-"""
 
 OS=`uname -s`
 REV=`uname -r`
@@ -15,7 +9,7 @@ GetVersionFromFile() {
 }
 
 
-if [ "${OS}" = "SunOS" ] ; then  #Oracle solaris
+if [ "${OS}" = "SunOS" ] ; then
 	OS=Solaris
 	ARCH=$(uname -p)
 	OSSTR="${OS} ${REV}(${ARCH} $(uname -v)"
@@ -23,24 +17,35 @@ if [ "${OS}" = "SunOS" ] ; then  #Oracle solaris
   echo Unsupported
   return
 
+elif [ "${OS}" = "AIX" ] ; then
+	OSSTR="${OS} $(oslevel) ($(oslevel -r)"
+  echo ${OSSTR}
+  echo Unsupported
+  return
 
 elif [ "${OS}" = "Linux" ] ; then
 	KERNEL=$(uname -r)
-	if [ -f /etc/redhat-release ] ; then #RED HAT BASED
+	if [ -f /etc/redhat-release ] ; then
 		DIST='RedHat'
 		PSUEDONAME=$(sed s/.*\(// < /etc/redhat-release | sed s/\)//)
 		REV=$(sed s/.*release\ // < /etc/redhat-release | sed s/\ .*//)
         echo Unsupported
-	elif [ -f /etc/SuSE-release ] ; then #SUSE BASED
+	elif [ -f /etc/SuSE-release ] ; then
 		DIST=$(tr "\n" ' ' < /etc/SuSE-release | sed s/VERSION.*//)
 		REV=$(tr "\n" ' ' < /etc/SuSE-release| sed s/.*=\ //)
         echo Unsupported
-	elif [ -f /etc/debian_version ] ; then	  #DEBIAN BASED
+	elif [ -f /etc/mandrake-release ] ; then
+		DIST='Mandrake'
+		PSUEDONAME=$(sed s/.*\(// < /etc/mandrake-release | sed s/\)//)
+		REV=$(sed s/.*release\ // < /etc/mandrake-release | sed s/\ .*//)
+        echo Unsupported
+	elif [ -f /etc/debian_version ] ; then	
 		if [ "$(awk -F= '/DISTRIB_ID/ {print $2}' /etc/lsb-release)" = "Ubuntu" ]; then
 			DIST="Ubuntu"
             echo Debian-based script:
             echo Refresh repos...
             $(sudo apt update -y > log.txt 2>&1)
+            $(sudo apt autoremove -y >> log.txt 2>&1)
             echo Installing Python...
             $(sudo apt install -y python3 >> log.txt 2>&1)
             echo Installing pip...
@@ -53,6 +58,7 @@ elif [ "${OS}" = "Linux" ] ; then
             echo Debian-based script:
             echo Refresh repos...
             $(sudo apt update -y > log.txt 2>&1)
+            $(sudo apt autoremove -y >> log.txt 2>&1)
             echo Installing Python...
             $(sudo apt install -y python3 >> log.txt 2>&1)
             echo Installing pip...

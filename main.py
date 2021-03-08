@@ -5,11 +5,11 @@ from Libraries.startMenu.startMenu import menu
 from GraphicMain.gameDesign import graficaPricipale
 
 def main():
-
+    
     exitMenu = -1
     exitGame = -1
 
-
+    '''
     while exitMenu != 0:
        
         exitMenu = menu()
@@ -18,7 +18,9 @@ def main():
         elif exitMenu == 1:
             while exitGame != 0:
                 exitGame = graficaPricipale()
-
+    '''
+    
+    graficaPricipale()
 
 if __name__ == "__main__":
     main()

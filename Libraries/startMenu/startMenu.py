@@ -15,7 +15,6 @@ pathname = os.path.dirname(os.path.realpath(__file__))
 
 #pygame initialization
 pygame.init()
-pygame.mixer.init()
 
 recognizer = sr.Recognizer()
 
@@ -188,8 +187,6 @@ def menu():
     background = Background(width, height)
     title = Title(width//6 * 5, height//6*5)
     hay = Hay((width,450))
-
-    pygame.mixer.init()
     
     #initialize sound track
     soundTrack = pygame.mixer.Sound(os.path.join(pathname, "startMenu.wav"))
@@ -215,7 +212,7 @@ def menu():
     
     endProgram = False
     keywords = ["inizia", "esci", "muta", "audio",
-                "play", "stop", "mute", "unmute"]
+                "Play"]
     start = False
     stop = False
     mute = False
@@ -274,14 +271,14 @@ def menu():
                     start = True
                     endProgram = True
                     userChoice = 1
-                elif keywords[1] in final or keywords[5] in final:
+                elif keywords[1] in final:
                     stop = True
                     endProgram = True
                     userChoice = 0
-                elif keywords[2] in final or keywords[6] in final:
+                elif keywords[2] in final:
                     btnMode.changeStatusTo(os.path.join(pathname,'sprites/mute.png'), soundTrack, silent)
                     silent = not silent
-                elif keywords[3] in final or keywords[7] in final:
+                elif keywords[3] in final:
                     btnMode.changeStatusTo(os.path.join(pathname,'sprites/volume.png'), soundTrack, silent)
                     silent = not silent
             except Exception:
