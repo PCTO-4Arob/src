@@ -224,6 +224,7 @@ def mainGraphic(screen, silent):
         
         ret, img=cam.read()
         img=cv2.resize(img,(WINDOW_WIDTH,WINDOW_HEIGHT))
+        img = cv2.flip(img, 1)
 
         #convert BGR to HSV
         imgHSV= cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
