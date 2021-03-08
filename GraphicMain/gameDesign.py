@@ -15,9 +15,104 @@ pathname = os.path.dirname(os.path.realpath(__file__))
 
 
 
+
 DIMCOW=(310, 510)# dimension of cowboy image
 DIMTOMB=(300, 300)
 
+
+def finalShoot(all_sprites, spr_ToChange):
+    tombstone = pygame.sprite.Sprite(all_sprites)
+    tombstone.image = pygame.image.load(os.path.join(pathname ,"Sprites/tombstone.png")).convert_alpha()
+    tombstone.rect = spr_ToChange.image.get_rect()
+    tombstone.rect.x = spr_ToChange.rect.x 
+    tombstone.rect.y = spr_ToChange.rect.y + (DIMCOW[1]-DIMTOMB[1])
+    spr_ToChange.kill()
+    return all_sprites
+
+
+def print_group(group,screen):
+    for sprite in group:
+        screen.blit(sprite.image, (sprite.rect.x,sprite.rect.y))
+    pygame.display.update()
+        
+
+
+def final_animation( screen, surf_title, winRed, all_sprites,spr_red, spr_blue,numberSpriters):
+    
+    cv2.destroyAllWindows()
+    
+    
+    '''
+    surf_title.update(screen)
+    all_sprites.draw(screen)
+    numberSpriters.draw(screen)
+    '''
+
+
+    spr_redReverse = pygame.sprite.Sprite(all_sprites)
+    spr_redReverse.image = pygame.image.load(os.path.join(pathname, "Sprites/redCowBoyInverted.png")).convert_alpha()
+    spr_redReverse.rect = spr_red.image.get_rect()
+    spr_redReverse.rect.x = spr_red.rect.x 
+    spr_redReverse.rect.y = spr_red.rect.y 
+    spr_red.kill()
+
+
+    #blue
+    spr_blueReverse = pygame.sprite.Sprite(all_sprites)
+    spr_blueReverse.image = pygame.image.load(os.path.join(pathname, "Sprites/blueCowBoy.png")).convert_alpha()
+    spr_blueReverse.rect = spr_blue.image.get_rect()
+    spr_blueReverse.rect.x = spr_blue.rect.x 
+    spr_blueReverse.rect.y = spr_blue.rect.y 
+    spr_blue.kill()
+
+    surf_title.update(screen)
+    all_sprites.draw(screen)
+    numberSpriters.draw(screen)
+
+    print_group(all_sprites,screen)
+
+    #screen.blit(spr_redReverse.image, (spr_redReverse.rect.x,spr_redReverse.rect.y))
+    #pygame.display.update()
+
+    
+
+    sleep(1)
+
+    #GENERATE GO SIGNAL
+    number = pygame.sprite.Sprite(numberSpriters)
+    number.image = pygame.image.load(os.path.join(pathname, "Sprites/counter"+str(5)+".png")).convert_alpha()
+    number.image = pygame.transform.scale(number.image , (100,100))
+    number.rect = number.image.get_rect()
+    number.rect.x =WINDOW_WIDTH /2-(100/2)
+    number.rect.y =10
+
+
+
+
+    #count became 0 to permit to exit the while loop
+    surf_title.update(screen)
+    all_sprites.draw(screen)
+    numberSpriters.draw(screen)
+    sleep(1)
+    fire = pygame.mixer.Sound(os.path.join(pathname, "theme/fire.wav"))#upload the gun sound
+    pygame.mixer.Sound.set_volume(fire,1)
+    pygame.mixer.Sound.play(fire)
+    
+
+    if winRed:
+        all_sprites = finalShoot(all_sprites, spr_blueReverse)
+    else:
+        #CHANGES red with a tombstone
+        all_sprites = finalShoot(all_sprites, spr_redReverse)
+
+    sleep(1)
+    surf_title.update(screen)
+    all_sprites.draw(screen)
+    numberSpriters.draw(screen)
+    print_group(all_sprites,screen)
+    sleep(1)
+
+    return
 
 
 
@@ -47,7 +142,7 @@ def graficaPricipale():
     
     #song
     a = pygame.mixer.Sound(os.path.join(pathname, "theme/fight.wav"))
-    pygame.mixer.Sound.set_volume(a,0.6)#0.6 is volume
+    pygame.mixer.Sound.set_volume(a,0.4)#0.6 is volume
     pygame.mixer.Sound.play(a,-1)#with -1 sound will restart forever
 
     #CREATION SPRITES-------------------------------------------------------------------------------------------------------
@@ -56,7 +151,7 @@ def graficaPricipale():
 
     #red cowboy
     spr_red = pygame.sprite.Sprite(all_sprites)
-    spr_red.image = pygame.image.load(os.path.join(pathname, "Sprites/redCowBoy.png")).convert_alpha()
+    spr_red.image = pygame.image.load(os.path.join(pathname, "Sprites/redCowBoyYou.png")).convert_alpha()
 
     spr_red.rect = spr_red.image.get_rect()
 
@@ -64,7 +159,7 @@ def graficaPricipale():
     spr_red.rect.x = WINDOW_WIDTH/2-DIMCOW[0] 
     spr_red.rect.y = WINDOW_HEIGHT-DIMCOW[1]
 
-
+    
 
     #blue cowboy
     spr_blue = pygame.sprite.Sprite(all_sprites)
@@ -154,7 +249,8 @@ def graficaPricipale():
 
         listCord[0] = center_x
         listCord[1] = center_y
-            
+
+        
             
         if listCord != [0,0]:
             xClick = listCord[0]
@@ -165,14 +261,14 @@ def graficaPricipale():
                     start_time = datetime.datetime.now()
                 elif datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
                     selected_question = True
-                    jingle = pygame.mixer.Sound(os.path.join(pathname, 'theme/correctAnswer.wav'))
-                    pygame.mixer.Sound.set_volume(jingle, 1)
-                    pygame.mixer.Sound.play(jingle)
                     timer = False
             if not answered and selected_question:
+
                 for answer in answers:
                     if answer.collide(x,y) and not answered:
                         print(answer.getText())
+                        answer.changeColor((255,255,0))
+                        pygame.display.update()
                         if not timer:
                             timer = True
                             start_time = datetime.datetime.now()
@@ -189,14 +285,11 @@ def graficaPricipale():
                                 winRed = 0
                                 count = 5
                             timer = False
+                    else:
+                        answer.changeColor((255,255,255))
             
-            
-            
-        #draw rectangle
         rect = pygame.Rect(max_dim[0], max_dim[2], max_dim[1], max_dim[3])
-        pygame.draw.rect(screen,BIANCO, rect,1)
-
-
+        pygame.draw.rect(screen,WHITE, rect,1) 
         cv2.waitKey(10)
 
 
@@ -229,13 +322,15 @@ def graficaPricipale():
     
         elif count==5:
             #TURN COWBOY-----------------------------------------------------------------
+            final_animation(screen,surf_title,winRed,all_sprites,spr_red,spr_blue,numberSpriters)
             cv2.destroyAllWindows()
             pygame.mixer.music.stop()#stop music
             count=0
         
     #end while
+    pygame.quit()
     
-    
+    #final_animation((spr_blue.rect.x, spr_blue.rect.y), (spr_red.rect.x, spr_red.rect.y), winRed)
     return 0
 #end main
 

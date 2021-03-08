@@ -8,9 +8,7 @@ The first game we are developing is a **western timed math quiz** written in pyt
 
 To receive the input from the player we use a tracking function in openCV that we use like a mouse. The player have max 5 second to move on the operation that come in a random position in the screen, then the player have 3 possible solution to use and if he select the right one the game will prompt another expression.
 
-The user can manage the menu with vocal reconition.
-
-The game finish wen the player select the wrong answere.
+The game finish wen the player select the wrong answer.
 
 <img title="" src="https://cdn.discordapp.com/attachments/816631707817869323/816631940874502175/unknown.png" alt="" width="487" data-align="center">
 

@@ -88,6 +88,8 @@ class ComplexText():
     def update(self,screen):
         screen.blit(self.img, (self.x,self.y))
         pygame.draw.rect(self.img, self.color, self.rect, self.thickness)
+    def changeColor(self,color):
+        self.color = color
 
 
 class TextBox():
@@ -112,6 +114,15 @@ class TextBox():
     
     def getText(self):
         return self.text.getText()
+    
+    def getCordX(self):
+        return self.x
+    def getCordY(self):
+        return self.y
+    
+    def changeColor(self,color):
+        self.text.changeColor(color)
+        
 
 
     def collide(self, x, y):
