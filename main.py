@@ -1,23 +1,25 @@
 import time
 import sys
-
-from Libraries.startMenu.startMenu import menu #import primary library for menu creation
-from GraphicMain.gameDesign import graficaPricipale #import primaru library form graphic
+import pygame
+from Libraries.startMenu.startMenu import menu
+from GraphicMain.gameDesign import graficaPricipale
+pygame.init()
 
 def main():
-    
+
     exitMenu = -1
     exitGame = -1
+    global screen
+    screen = pygame.display.set_mode((1000,600))
 
     while exitMenu != 0:
        
-        exitMenu = menu()
-        
+        exitMenu = menu(screen)
         if exitMenu == 0:
             exit(0)
         elif exitMenu == 1:
             while exitGame != 0:
-                exitGame = graficaPricipale()
+                exitGame = graficaPricipale(screen)
 
 
 if __name__ == "__main__":

@@ -22,9 +22,7 @@ POSSIBLE_POSITIONS = [(WINDOW_WIDTH/4-200, WINDOW_HEIGHT/4),
 
 
 '''------------------------------
-
 CLASSES
-
 -------------------------------'''
 class SimpleText():
     def __init__(self, x, y, text, txtFont='freesansbold.ttf', size = 150, color = (255,255,255)):
@@ -187,9 +185,7 @@ class Counter():
 
 
 '''------------------------------
-
 FUNCTIONS
-
 -------------------------------'''
 
 

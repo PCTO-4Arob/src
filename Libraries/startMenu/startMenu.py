@@ -15,6 +15,7 @@ pathname = os.path.dirname(os.path.realpath(__file__))
 
 #pygame initialization
 pygame.init()
+pygame.mixer.init()
 
 recognizer = sr.Recognizer()
 
@@ -41,7 +42,7 @@ class Background():
             print('error: ', str(e))
 
     #update the background status
-    def update(self):
+    def update(self,screen):
         self.rect.move(self.rect.center[0]+5,self.rect.center[1])
         screen.blit(self.fullScreenImage, self.rect)
 
@@ -61,7 +62,7 @@ class Title():
             print('error: ', str(e))
 
     #this method update the title status
-    def update(self):
+    def update(self,screen):
         screen.blit(self.image, self.rect)
 
 
@@ -86,7 +87,7 @@ class Button():
         return self.rect.center[1]
 
     #update the button status
-    def update(self,x,y):
+    def update(self,screen,x,y):
         #controls if the user press the button
         if self.rect.collidepoint(x, y):
             return True
@@ -118,7 +119,7 @@ class Button():
 
         screen.blit(self.image, self.rect)
     
-    def changeStatusTo(self, filepath, soundTrack, silent):
+    def changeStatusTo(self,screen, filepath, soundTrack, silent):
         
         soundEffect = pygame.mixer.Sound(os.path.join(pathname, "btnClick.wav"))
         pygame.mixer.Sound.set_volume(soundEffect,0.5)#0.5 is the volume
@@ -153,7 +154,7 @@ class Hay(pygame.sprite.Sprite):
         self.speed = -1
 
     #this method update the sprite status
-    def update(self, time, width):
+    def update(self,screen, time, width):
         #if the time is odd, it moves the sprite
         if time%2 == 0:
             self.rect = self.rect.move([self.speed,0])
@@ -175,12 +176,12 @@ def controlExit(event):
 
 
 #this is the main function
-def menu():
+def menu(screen):
 
     #screen is the display
-    global screen 
+    #global screen 
     width, height = 1000,600 #screens size
-    screen = pygame.display.set_mode((width,height))
+    #screen = pygame.display.set_mode((width,height))
     
 
     #initialize objects
@@ -223,36 +224,18 @@ def menu():
         recognizer.adjust_for_ambient_noise(source, duration=1)
         while not endProgram and (start or stop == False):
             #updates elements
-            background.update()
-            title.update()
-            if hay.update(time, width):
+            background.update(screen)
+            title.update(screen)
+            if hay.update(screen, time, width):
                 hay = Hay((width,450))  
-            btnPlay.update(width, height)
-            btnExit.update(width, height)
-            btnMode.update(width, height)
+            btnPlay.update(screen, width, height)
+            btnExit.update(screen, width, height)
+            btnMode.update(screen, width, height)
             
             
             for event in pygame.event.get():
                 controlExit(event)
 
-                #if the mouse is pressed it control if it is the case
-                #to change the buttons status
-                '''
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Set the x, y postions of the mouse click
-                    for key, value in buttonList.items():
-                        x, y = event.pos
-                        
-                        if key == 2:
-                            if silent:
-                                btnMode.changeStatus('./sprites/volume.png', x, y, soundTrack, silent)
-                            else:
-                                btnMode.changeStatus('./sprites/mute.png', x, y, soundTrack, silent)
-                            silent = not silent
-                        elif value.update(x, y) == True: 
-                            userChoice = key
-                            endProgram = True
-                '''         
 
             #update screen status
             pygame.display.update()
@@ -286,7 +269,7 @@ def menu():
     
     
     pygame.mixer.Sound.stop(soundTrack)
-    pygame.display.quit()
+    #pygame.quit()
     return userChoice 
 
 if __name__ == "__main__":

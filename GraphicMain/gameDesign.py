@@ -116,7 +116,7 @@ def final_animation( screen, surf_title, winRed, all_sprites,spr_red, spr_blue,n
 
 
 
-def graficaPricipale():
+def graficaPricipale(screen):
     
     lowerBound=np.array([33,80,40])
     upperBound=np.array([102,255,255])
@@ -137,8 +137,8 @@ def graficaPricipale():
     #SCREEN TO COMMENT ALL---------------------------------------------------------------------------------------------------------------
     
     pygame.init()
-    global screen
-    screen= pygame.display.set_mode((x, y))#create screen
+    #global screen
+    #screen= pygame.display.set_mode((x, y))#create screen
     
     #song
     a = pygame.mixer.Sound(os.path.join(pathname, "theme/fight.wav"))
@@ -263,30 +263,30 @@ def graficaPricipale():
                     selected_question = True
                     timer = False
             if not answered and selected_question:
-
-                for answer in answers:
-                    if answer.collide(x,y) and not answered:
-                        print(answer.getText())
-                        answer.changeColor((255,255,0))
-                        pygame.display.update()
-                        if not timer:
-                            timer = True
-                            start_time = datetime.datetime.now()
-                        elif datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
-                            if answer.isCorrect(result):
-                                answered = True
-                                jingle = pygame.mixer.Sound(os.path.join(pathname, 'theme/correctAnswer.wav'))
-                                pygame.mixer.Sound.set_volume(jingle, 1)
-                                pygame.mixer.Sound.play(jingle)
-                            else:
-                                jingle = pygame.mixer.Sound(os.path.join(pathname, 'theme/wrongAnswer.wav'))
-                                pygame.mixer.Sound.set_volume(jingle, 1)
-                                pygame.mixer.Sound.play(jingle)
-                                winRed = 0
-                                count = 5
-                            timer = False
-                    else:
-                        answer.changeColor((255,255,255))
+                if not timer:
+                    start_time = datetime.datetime.now()
+                    timer = True
+                else:
+                    for answer in answers:
+                        if answer.collide(x,y) and not answered:
+                            print(answer.getText())
+                            answer.changeColor((255,255,0))
+                            pygame.display.update()
+                            if datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
+                                if answer.isCorrect(result):
+                                    answered = True
+                                    jingle = pygame.mixer.Sound(os.path.join(pathname, 'theme/correctAnswer.wav'))
+                                    pygame.mixer.Sound.set_volume(jingle, 1)
+                                    pygame.mixer.Sound.play(jingle)
+                                else:
+                                    jingle = pygame.mixer.Sound(os.path.join(pathname, 'theme/wrongAnswer.wav'))
+                                    pygame.mixer.Sound.set_volume(jingle, 1)
+                                    pygame.mixer.Sound.play(jingle)
+                                    winRed = 0
+                                    count = 5
+                                timer = False
+                        else:
+                            answer.changeColor((255,255,255))
             
         rect = pygame.Rect(max_dim[0], max_dim[2], max_dim[1], max_dim[3])
         pygame.draw.rect(screen,WHITE, rect,1) 
@@ -328,7 +328,7 @@ def graficaPricipale():
             count=0
         
     #end while
-    pygame.quit()
+    #pygame.quit()
     
     #final_animation((spr_blue.rect.x, spr_blue.rect.y), (spr_red.rect.x, spr_red.rect.y), winRed)
     return 0
