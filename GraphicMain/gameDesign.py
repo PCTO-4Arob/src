@@ -8,12 +8,11 @@ from pygame.locals import *
 from time import sleep
 from GraphicMain.operations import *
 from GraphicMain.classAndFunctions import *
-from GraphicMain.message import final_animation
+#from GraphicMain.message import final_animation
 
 import os
 
 pathname = os.path.dirname(os.path.realpath(__file__))
-
 
 
 
