@@ -8,7 +8,7 @@ from pygame.locals import *
 from time import sleep
 from GraphicMain.operations import *
 from GraphicMain.classAndFunctions import *
-from GraphicMain.final_animation import final_animation
+from GraphicMain.message import final_animation
 
 import os
 
@@ -167,6 +167,9 @@ def graficaPricipale():
                     start_time = datetime.datetime.now()
                 elif datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
                     selected_question = True
+                    jingle = pygame.mixer.Sound(os.path.join(pathname, 'theme/correctAnswer.wav'))
+                    pygame.mixer.Sound.set_volume(jingle, 1)
+                    pygame.mixer.Sound.play(jingle)
                     timer = False
             if not answered and selected_question:
                 for answer in answers:
@@ -191,7 +194,11 @@ def graficaPricipale():
             
             
             
-        cv2.imshow("cam",img)
+        #draw rectangle
+        rect = pygame.Rect(max_dim[0], max_dim[2], max_dim[1], max_dim[3])
+        pygame.draw.rect(screen,BIANCO, rect,1)
+
+
         cv2.waitKey(10)
 
 
@@ -229,9 +236,8 @@ def graficaPricipale():
             count=0
         
     #end while
-    pygame.quit()
     
-    #final_animation((spr_blue.rect.x, spr_blue.rect.y), (spr_red.rect.x, spr_red.rect.y), winRed)
+    final_animation(screen, surf_title, spr_blue, spr_red, winRed, all_sprites)
     return 0
 #end main
 
