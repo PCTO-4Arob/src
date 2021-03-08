@@ -148,7 +148,7 @@ def mainGraphic(screen):
     #screen= pygame.display.set_mode((x, y))#create screen
     
     #song
-    a = pygame.mixer.Sound(os.path.join(pathname, "theme/fight.wav"))
+    soundTrack = pygame.mixer.Sound(os.path.join(pathname, "theme/fight.wav"))
     pygame.mixer.Sound.set_volume(a,0.4)#0.6 is volume
     pygame.mixer.Sound.play(a,-1)#with -1 sound will restart forever
 
@@ -341,7 +341,7 @@ def mainGraphic(screen):
             count=0
         
     #end while
-    
+    pygame.mixer.Sound.stop(soundTrack)
     return 0
 #end main
 
