@@ -123,7 +123,7 @@ def final_animation( screen, surf_title, winRed, all_sprites,spr_red, spr_blue,n
 
 
 
-def mainGraphic(screen):
+def mainGraphic(screen, silent):
     
     lowerBound=np.array([33,80,40])
     upperBound=np.array([102,255,255])
@@ -150,7 +150,7 @@ def mainGraphic(screen):
     #song
     soundTrack = pygame.mixer.Sound(os.path.join(pathname, "theme/fight.wav"))
     pygame.mixer.Sound.set_volume(soundTrack,0.4)#0.6 is volume
-    pygame.mixer.Sound.play(soundTrack,-1)#with -1 sound will restart forever
+    if not silent: pygame.mixer.Sound.play(soundTrack,-1)#with -1 sound will restart forever
 
     #CREATION SPRITES-------------------------------------------------------------------------------------------------------
     all_sprites = pygame.sprite.Group()
@@ -192,14 +192,14 @@ def mainGraphic(screen):
     timer = False
     winRed = 1
 
-    while count > 0 and count <= 5:
+    while count > 0 and count < 5:
         #drawing sprites     
         #draw these two group of sprites
         surf_title.update(screen)
         all_sprites.draw(screen)
         numberSpriters.draw(screen)
         
-        if gameStatus == 0 and count < 5:
+        if gameStatus == 0:
             question, result = initQuestion()
             question.update(screen)
             gameStatus = 1
@@ -252,11 +252,8 @@ def mainGraphic(screen):
             center_x = max_dim[0] + ((max_dim[1] - max_dim[0]) / 2)
             center_y = max_dim[2] + ((max_dim[3] - max_dim[2]) / 2) 
 
-
             listCord[0] = center_x
             listCord[1] = center_y
-
-            
                 
             if listCord != [0,0]:
                 if question.collide(x,y) and not selected_question:
@@ -284,8 +281,8 @@ def mainGraphic(screen):
                             else:
                                 answer.changeColor((255,255,255))
                             
-                            if datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
-                                if answer.isCorrect(result):
+                            if datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5) and not answered:
+                                if answer.isCorrect(result) and answer.collide(x,y):
                                     answered = True
                                     jingle = pygame.mixer.Sound(os.path.join(pathname, 'theme/correctAnswer.wav'))
                                     pygame.mixer.Sound.set_volume(jingle, 1)
@@ -296,8 +293,11 @@ def mainGraphic(screen):
                                     pygame.mixer.Sound.play(jingle)
                                     winRed = 0
                                     count = 5
+                                    break
                                 timer = False
                                 firstAnswer = True
+                                selected_question = False
+                                
                 
             rect = pygame.Rect(max_dim[0], max_dim[2], max_dim[1], max_dim[3])
             pygame.draw.rect(screen,WHITE, rect,1) 
@@ -333,15 +333,14 @@ def mainGraphic(screen):
             
            
     
-        elif count==5:
-            #TURN COWBOY-----------------------------------------------------------------
-            final_animation(screen,surf_title,winRed,all_sprites,spr_red,spr_blue,numberSpriters)
-            cv2.destroyAllWindows()
-            pygame.mixer.music.stop()#stop music
-            count=0
+        
         
     #end while
+    #TURN COWBOY-----------------------------------------------------------------
+    final_animation(screen,surf_title,winRed,all_sprites,spr_red,spr_blue,numberSpriters)
+    pygame.mixer.music.stop()#stop music
     pygame.mixer.Sound.stop(soundTrack)
+
     return 0
 #end main
 

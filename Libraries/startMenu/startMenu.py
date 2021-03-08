@@ -180,7 +180,7 @@ def bottonClick():
     pygame.mixer.Sound.play(soundEffect,0) #play the track
 
 #this is the main function
-def menu(screen):
+def menu(screen, silent):
 
     #screen is the display
     #global screen 
@@ -196,8 +196,8 @@ def menu(screen):
     #initialize sound track
     soundTrack = pygame.mixer.Sound(os.path.join(pathname, "startMenu.wav"))
     pygame.mixer.Sound.set_volume(soundTrack,0.5)#0.5 is the volume
-    pygame.mixer.Sound.play(soundTrack,-1)#the -1 let the sound repeates when it ends
-    silent = False #this variables control if the screen is muted
+    if not silent: pygame.mixer.Sound.play(soundTrack,-1)#the -1 let the sound repeates when it ends
+    
 
     #this dictionary cointains all of the buttons 
     buttonList = {}
@@ -276,7 +276,7 @@ def menu(screen):
     
     pygame.mixer.Sound.stop(soundTrack)
     #pygame.quit()
-    return userChoice 
+    return userChoice, silent
 
 if __name__ == "__main__":
     menu()

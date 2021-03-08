@@ -7,9 +7,7 @@ pathname = os.path.dirname(os.path.realpath(__file__))
 
 
 def final_animation( screen, surf_title, posBlue, posRed, winRed, all_sprites):
-    print("viva la vidaaaa")
     numberSpriters=pygame.sprite.Group()
-    
     
     surf_title.update(screen)
     all_sprites.draw(screen)
@@ -29,7 +27,6 @@ def final_animation( screen, surf_title, posBlue, posRed, winRed, all_sprites):
     spr_blueReverse.rect.x = spr_blue.rect.x 
     spr_blueReverse.rect.y = spr_blue.rect.y 
     spr_blue.kill()
-    
 
     #GENERATE GO SIGNAL
     number = pygame.sprite.Sprite(numberSpriters)
@@ -66,6 +63,12 @@ def final_animation( screen, surf_title, posBlue, posRed, winRed, all_sprites):
     surf_title.update(screen)
     all_sprites.draw(screen)
     numberSpriters.draw(screen)
-    sleep(10)
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                break
+            if event.type == pygame.KEYDOWN:
+                break
 
     return
