@@ -20,6 +20,13 @@ DIMCOW=(310, 510)# dimension of cowboy image
 DIMTOMB=(300, 300)
 
 
+def controlCord(answer, prec_answer):
+    if prec_answer.getCordY() - answer.getCordY() <= 200 and prec_answer.getCordX() - answer.getCordX() <= 200:
+       return True
+    else: return False
+
+
+
 def finalShoot(all_sprites, spr_ToChange):
     tombstone = pygame.sprite.Sprite(all_sprites)
     tombstone.image = pygame.image.load(os.path.join(pathname ,"Sprites/tombstone.png")).convert_alpha()
@@ -241,37 +248,42 @@ def graficaPricipale(screen):
                 max_dim[3] = y + h
 
         if max_dim[1] >= 400:
-            cv2.rectangle(img,(max_dim[0],max_dim[2]),(max_dim[1],max_dim[3]),(0,0,255), 2)
 
-        center_x = max_dim[0] + ((max_dim[1] - max_dim[0]) / 2)
-        center_y = max_dim[2] + ((max_dim[3] - max_dim[2]) / 2) 
+            center_x = max_dim[0] + ((max_dim[1] - max_dim[0]) / 2)
+            center_y = max_dim[2] + ((max_dim[3] - max_dim[2]) / 2) 
 
 
-        listCord[0] = center_x
-        listCord[1] = center_y
+            listCord[0] = center_x
+            listCord[1] = center_y
 
-        
             
-        if listCord != [0,0]:
-            xClick = listCord[0]
-            yClick = listCord[1]
-            if question.collide(x,y) and not selected_question:
-                if not timer:
-                    timer = True
-                    start_time = datetime.datetime.now()
-                elif datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
-                    selected_question = True
-                    timer = False
-            if not answered and selected_question:
-                if not timer:
-                    start_time = datetime.datetime.now()
-                    timer = True
-                else:
-                    for answer in answers:
-                        if answer.collide(x,y) and not answered:
-                            print(answer.getText())
-                            answer.changeColor((255,255,0))
-                            pygame.display.update()
+                
+            if listCord != [0,0]:
+                if question.collide(x,y) and not selected_question:
+                    if not timer:
+                        timer = True
+                        start_time = datetime.datetime.now()
+                    elif datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
+                        selected_question = True
+                        timer = False
+                        firstAnswer = True
+                if not answered and selected_question:
+                    if not timer:
+                        start_time = datetime.datetime.now()
+                        timer = True
+                    else:
+                        for answer in answers:
+                            if firstAnswer:
+                                prec_answer = answer
+                                firstAnswer = False
+                            if answer.collide(x,y) and not answered and controlCord(answer, prec_answer):
+                            
+                                prec_answer = answer
+                                answer.changeColor((255,255,0))
+                                pygame.display.update()
+                            else:
+                                answer.changeColor((255,255,255))
+                            
                             if datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
                                 if answer.isCorrect(result):
                                     answered = True
@@ -285,13 +297,14 @@ def graficaPricipale(screen):
                                     winRed = 0
                                     count = 5
                                 timer = False
-                        else:
-                            answer.changeColor((255,255,255))
+                                firstAnswer = True
+                
+            rect = pygame.Rect(max_dim[0], max_dim[2], max_dim[1], max_dim[3])
+            pygame.draw.rect(screen,WHITE, rect,1) 
+            cv2.waitKey(10)
             
-        rect = pygame.Rect(max_dim[0], max_dim[2], max_dim[1], max_dim[3])
-        pygame.draw.rect(screen,WHITE, rect,1) 
-        cv2.waitKey(10)
-
+        else:
+            pass
 
         pygame.display.flip()
         for event in pygame.event.get():
