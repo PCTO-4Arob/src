@@ -213,7 +213,7 @@ def menu(screen):
     
     endProgram = False
     keywords = ["inizia", "esci", "muta", "audio",
-                "Play"]
+                "play"]
     start = False
     stop = False
     mute = False
@@ -248,7 +248,7 @@ def menu(screen):
                     recorded_audio, 
                     language="it_EU"
                 )
-                final = text.split(" ")
+                final = text.lower().split(" ")
 
                 if keywords[0] in final or keywords[4] in final:
                     start = True
@@ -258,12 +258,12 @@ def menu(screen):
                     stop = True
                     endProgram = True
                     userChoice = 0
-                elif keywords[2] in final:
-                    btnMode.changeStatusTo(os.path.join(pathname,'sprites/mute.png'), soundTrack, silent)
-                    silent = not silent
-                elif keywords[3] in final:
-                    btnMode.changeStatusTo(os.path.join(pathname,'sprites/volume.png'), soundTrack, silent)
-                    silent = not silent
+                elif keywords[2] in final and not silent:
+                    btnMode.changeStatusTo(screen, os.path.join(pathname,'sprites/mute.png'), soundTrack, silent)
+                    silent = True
+                elif keywords[3] in final and silent:
+                    btnMode.changeStatusTo(screen, os.path.join(pathname,'sprites/volume.png'), soundTrack, silent)
+                    silent = False
             except Exception:
                 pass
     
