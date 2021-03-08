@@ -149,8 +149,8 @@ def mainGraphic(screen):
     
     #song
     soundTrack = pygame.mixer.Sound(os.path.join(pathname, "theme/fight.wav"))
-    pygame.mixer.Sound.set_volume(a,0.4)#0.6 is volume
-    pygame.mixer.Sound.play(a,-1)#with -1 sound will restart forever
+    pygame.mixer.Sound.set_volume(soundTrack,0.4)#0.6 is volume
+    pygame.mixer.Sound.play(soundTrack,-1)#with -1 sound will restart forever
 
     #CREATION SPRITES-------------------------------------------------------------------------------------------------------
     all_sprites = pygame.sprite.Group()
