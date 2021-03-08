@@ -84,6 +84,9 @@ elif [ "${OS}" = "Linux" ] ; then
 	OSSTR="${OS} ${DIST} ${REV}(${PSUEDONAME} ${KERNEL} ${MACH})"
   #echo Your distro: ${OSSTR}
 
+'''
+DEPRECATED NOT WORKING
+
 elif [ "${OS}" == "Darwin" ]; then
   type -p sw_vers &>/dev/null
   [ $? -eq 0 ] && {
@@ -102,7 +105,6 @@ elif [ "${OS}" == "Darwin" ]; then
 
     echo "Install Library"
     $(pip install -r requirements.txt)
-
     
     #OS=`sw_vers | grep 'ProductName' | cut -f 2`
     #VER=`sw_vers | grep 'ProductVersion' | cut -f 2`
@@ -113,6 +115,7 @@ elif [ "${OS}" == "Darwin" ]; then
   }
   echo ${OSSTR}
   return
+'''
 
 fi
 
