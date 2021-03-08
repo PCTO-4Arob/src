@@ -195,8 +195,9 @@ def menu(screen, silent):
     
     #initialize sound track
     soundTrack = pygame.mixer.Sound(os.path.join(pathname, "startMenu.wav"))
-    pygame.mixer.Sound.set_volume(soundTrack,0.5)#0.5 is the volume
-    if not silent: pygame.mixer.Sound.play(soundTrack,-1)#the -1 let the sound repeates when it ends
+    if not silent: pygame.mixer.Sound.set_volume(soundTrack,0.5)#0.5 is the volume
+    else: pygame.mixer.Sound.set_volume(soundTrack,0.0)#0.00 is the volume
+    pygame.mixer.Sound.play(soundTrack,-1)#the -1 let the sound repeates when it ends
     
 
     #this dictionary cointains all of the buttons 
@@ -204,7 +205,10 @@ def menu(screen, silent):
 
     btnPlay = Button(os.path.join(pathname, 'sprites/btnplay.png'), width, height//4)
     btnExit = Button(os.path.join(pathname, 'sprites/btnexit.png'), width, btnPlay.getY() + 100)
-    btnMode = Button(os.path.join(pathname, 'sprites/volume.png'), width, btnExit.getY() + 100)
+    if not silent: 
+        btnMode = Button(os.path.join(pathname, 'sprites/volume.png'), width, btnExit.getY() + 100)
+    else:
+        btnMode = Button(os.path.join(pathname, 'sprites/mute.png'), width, btnExit.getY() + 100)
     buttonList[1] = btnPlay 
     buttonList[0] = btnExit
     buttonList[2] = btnMode
