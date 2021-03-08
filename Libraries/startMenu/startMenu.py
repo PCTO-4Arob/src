@@ -174,6 +174,10 @@ def controlExit(event):
         pygame.quit()
         sys.exit()
 
+def bottonClick():
+    soundEffect = pygame.mixer.Sound(os.path.join(pathname, "btnClick.wav"))
+    pygame.mixer.Sound.set_volume(soundEffect,0.5)#0.5 is the volume
+    pygame.mixer.Sound.play(soundEffect,0) #play the track
 
 #this is the main function
 def menu(screen):
@@ -253,10 +257,12 @@ def menu(screen):
                 if keywords[0] in final or keywords[4] in final:
                     start = True
                     endProgram = True
+                    bottonClick()
                     userChoice = 1
                 elif keywords[1] in final:
                     stop = True
                     endProgram = True
+                    bottonClick()
                     userChoice = 0
                 elif keywords[2] in final and not silent:
                     btnMode.changeStatusTo(screen, os.path.join(pathname,'sprites/mute.png'), soundTrack, silent)
