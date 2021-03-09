@@ -8,7 +8,6 @@ from pygame.locals import *
 from time import sleep
 from GraphicMain.operations import *
 from GraphicMain.classAndFunctions import *
-
 import os
 
 pathname = os.path.dirname(os.path.realpath(__file__))
@@ -47,13 +46,6 @@ def print_group(group,screen):
 def final_animation( screen, surf_title, winRed, all_sprites,spr_red, spr_blue,numberSpriters):
     
     cv2.destroyAllWindows()
-    
-    
-    '''
-    surf_title.update(screen)
-    all_sprites.draw(screen)
-    numberSpriters.draw(screen)
-    '''
 
 
     spr_redReverse = pygame.sprite.Sprite(all_sprites)
@@ -78,11 +70,6 @@ def final_animation( screen, surf_title, winRed, all_sprites,spr_red, spr_blue,n
 
     print_group(all_sprites,screen)
 
-    #screen.blit(spr_redReverse.image, (spr_redReverse.rect.x,spr_redReverse.rect.y))
-    #pygame.display.update()
-
-    
-
     sleep(1)
 
     #GENERATE GO SIGNAL
@@ -92,8 +79,6 @@ def final_animation( screen, surf_title, winRed, all_sprites,spr_red, spr_blue,n
     number.rect = number.image.get_rect()
     number.rect.x =WINDOW_WIDTH /2-(100/2)
     number.rect.y =10
-
-
 
 
     #count became 0 to permit to exit the while loop
@@ -108,16 +93,19 @@ def final_animation( screen, surf_title, winRed, all_sprites,spr_red, spr_blue,n
 
     if winRed:
         all_sprites = finalShoot(all_sprites, spr_blueReverse)
+        winLabel = SimpleText(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 'YOU WIN!\npress a key')
     else:
         #CHANGES red with a tombstone
         all_sprites = finalShoot(all_sprites, spr_redReverse)
+        winLabel = SimpleText(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 'YOU LOSE :(\n press a key')
 
     sleep(1)
+    winLabel.update(screen)
     surf_title.update(screen)
     all_sprites.draw(screen)
     numberSpriters.draw(screen)
     print_group(all_sprites,screen)
-    sleep(1)
+    
 
     return
 
@@ -133,13 +121,7 @@ def mainGraphic(screen, silent):
     cam.set(cv2.CAP_PROP_FRAME_HEIGHT, WINDOW_HEIGHT)
     kernelOpen=np.ones((5,5))
     kernelClose=np.ones((20,20))
-
-
-    listCord = [0, 0]
-
-    
-    x=1000 #dimensioni basi
-    y=600
+   
 
     #SCREEN TO COMMENT ALL---------------------------------------------------------------------------------------------------------------
     
@@ -222,105 +204,78 @@ def mainGraphic(screen, silent):
                 answered = False
                 selected_question = False
         
-        ret, img=cam.read()
-        img=cv2.resize(img,(WINDOW_WIDTH,WINDOW_HEIGHT))
+        _, img=cam.read()
+        img = cv2.resize(img,(WINDOW_WIDTH,WINDOW_HEIGHT))
         img = cv2.flip(img, 1)
 
-        #convert BGR to HSV
-        imgHSV= cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
-        # create the Mask
-        mask=cv2.inRange(imgHSV,lowerBound,upperBound)
-        #morphology
-        maskOpen=cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernelOpen)
-        maskClose=cv2.morphologyEx(maskOpen,cv2.MORPH_CLOSE,kernelClose)
-
-        maskFinal=maskClose
-        conts,h=cv2.findContours(maskFinal.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
-
-        cv2.drawContours(img,conts,-1,(255,0,0),3)
-
-        max_dim = [0, 0, 0, 0]
-        for element in conts:
-            x,y,w,h=cv2.boundingRect(element)
-            if x + w > max_dim[1]:
-                max_dim[0] = x
-                max_dim[1] = x + w
-                max_dim[2] = y
-                max_dim[3] = y + h
+        
+        conts = calculateCounrours(img, lowerBound, upperBound, kernelClose, kernelOpen)
+        max_dim = calculateMaxDim(conts)
 
         if max_dim[1] >= 400:
 
             center_x = max_dim[0] + ((max_dim[1] - max_dim[0]) / 2)
             center_y = max_dim[2] + ((max_dim[3] - max_dim[2]) / 2) 
 
-            listCord[0] = center_x
-            listCord[1] = center_y
-                
-            if listCord != [0,0]:
-                if question.collide(x,y) and not selected_question:
-                    if not timer:
-                        timer = True
-                        start_time = datetime.datetime.now()
-                    elif datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
-                        selected_question = True
-                        timer = False
-                        firstAnswer = True
-                if not answered and selected_question:
-                    if not timer:
-                        start_time = datetime.datetime.now()
-                        timer = True
-                    else:
-                        for answer in answers:
-                            if firstAnswer:
-                                prec_answer = answer
-                                firstAnswer = False
-                            if answer.collide(x,y) and not answered and controlCord(answer, prec_answer):
-                            
-                                prec_answer = answer
-                                answer.changeColor((255,255,0))
-                                pygame.display.update()
+            
+            if question.collide(center_x,center_y) and not selected_question:
+                if not timer:
+                    timer = True
+                    start_time = datetime.datetime.now()
+                elif datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
+                    selected_question = True
+                    timer = False
+                    firstAnswer = True
+            
+            if not answered and selected_question:
+                if not timer:
+                    start_time = datetime.datetime.now()
+                    timer = True
+                else:
+                    for answer in answers:
+                        if firstAnswer:
+                            prec_answer = answer
+                            firstAnswer = False
+                        if answer.collide(center_x,center_y) and not answered and controlCord(answer, prec_answer):
+                            prec_answer = answer
+                            answer.changeColor((255,255,0))
+                            pygame.display.update()
+                        else:
+                            answer.changeColor((255,255,255))
+                        
+                        if datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5) and not answered:
+                            if answer.isCorrect(result) and answer.collide(center_x,center_y):
+                                answered = True
+                                riproduceJingle(os.path.join(pathname, 'theme/correctAnswer.wav'))
                             else:
-                                answer.changeColor((255,255,255))
-                            
-                            if datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5) and not answered:
-                                if answer.isCorrect(result) and answer.collide(x,y):
-                                    answered = True
-                                    jingle = pygame.mixer.Sound(os.path.join(pathname, 'theme/correctAnswer.wav'))
-                                    pygame.mixer.Sound.set_volume(jingle, 1)
-                                    pygame.mixer.Sound.play(jingle)
-                                else:
-                                    jingle = pygame.mixer.Sound(os.path.join(pathname, 'theme/wrongAnswer.wav'))
-                                    pygame.mixer.Sound.set_volume(jingle, 1)
-                                    pygame.mixer.Sound.play(jingle)
-                                    winRed = 0
-                                    count = 5
-                                    break
-                                timer = False
-                                firstAnswer = True
-                                selected_question = False
+                                riproduceJingle(os.path.join(pathname, 'theme/wrongAnswer.wav'))
+                                winRed = 0
+                                count = 5
                                 
+                            timer = False
+                            firstAnswer = True
+                            selected_question = False
+                        #end if
+                    #end for
+                #end if
+            #end if                    
                 
             rect = pygame.Rect(max_dim[0], max_dim[2], max_dim[1], max_dim[3])
             pygame.draw.rect(screen,WHITE, rect,1) 
             cv2.waitKey(10)
-            
-        else:
-            pass
+        
 
         pygame.display.flip()
         for event in pygame.event.get():
-            if event.type==pygame.QUIT:#if you quit program will not cush
-                pygame.quit()
-                sys.exit()
+            controlExit(event)
 
         
             
         if count<5 and count>0:
             #COWBOYS POSISTION CHANGES--------------------------------------------------------------------------------------- 
             if move:
-                spr_blue.rect.x += int(WINDOW_WIDTH/20)#RIGHT
-
-                spr_red.rect.x -= int(WINDOW_WIDTH/20)#LEFT
+                spr_blue.rect.x += int(WINDOW_WIDTH/20)#
+                spr_red.rect.x -= int(WINDOW_WIDTH/20)#
                 move = False
             
             #number counter-------------------------------------------------------------------------------------------
@@ -341,6 +296,14 @@ def mainGraphic(screen, silent):
     final_animation(screen,surf_title,winRed,all_sprites,spr_red,spr_blue,numberSpriters)
     pygame.mixer.music.stop()#stop music
     pygame.mixer.Sound.stop(soundTrack)
+
+
+    endGame = False
+    while not endGame:
+        for event in pygame.event.get():
+            controlExit(event)
+            if backToMain(event): 
+                endGame = True
 
     return 0
 #end main

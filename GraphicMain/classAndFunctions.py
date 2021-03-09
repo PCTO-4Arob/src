@@ -1,9 +1,12 @@
 import pygame, sys
 import random
+import os
+import cv2
 from pygame.locals import *
 from GraphicMain.operations import *
+from config import *
 from time import sleep
-import os
+
 
 pathname = os.path.dirname(os.path.realpath(__file__))
 
@@ -11,8 +14,6 @@ pathname = os.path.dirname(os.path.realpath(__file__))
 pygame.init()
 
 
-WINDOW_WIDTH = 1000
-WINDOW_HEIGHT = 600
 WHITE = (255,255,255)
 POSSIBLE_POSITIONS = [(WINDOW_WIDTH/4-200, WINDOW_HEIGHT/4),
                         (WINDOW_WIDTH/4-200, WINDOW_HEIGHT/4*3),
@@ -218,35 +219,42 @@ def controlExit(event):
         sys.exit()
 
 
-
-def main():
-    global screen
-    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-
-    question, result = initQuestion()
-    
-    dom = True
-    exitGame = False
-
-    while not exitGame:
-        screen.fill((0,0,0))
-        for event in pygame.event.get():
-            controlExit(event)
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                # Set the x, y postions of the mouse click
-                x, y = event.pos
-                if question.collide(x,y) and dom:
-                    answerBoxes = initAnswers(result)
-                    dom = False
-        if dom:
-            question.update(screen)
-        else:
-            for el in answerBoxes:
-                el.update(screen)
-        pygame.display.update()
+def riproduceJingle(path):
+    jingle = pygame.mixer.Sound(path)
+    pygame.mixer.Sound.set_volume(jingle, 1)
+    pygame.mixer.Sound.play(jingle)
 
 
+def calculateMaxDim(conts):
+    max_dim = [0, 0, 0, 0]
+    for element in conts:
+        x,y,w,h=cv2.boundingRect(element)
+        if x + w > max_dim[1]:
+            max_dim[0] = x
+            max_dim[1] = x + w
+            max_dim[2] = y
+            max_dim[3] = y + h
+    return max_dim
 
-if __name__ == '__main__':
-    main()
+
+def calculateCounrours(img, lowerBound, upperBound, kernelClose, kernelOpen):
+    #convert BGR to HSV
+    imgHSV= cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
+    # create the Mask
+    mask=cv2.inRange(imgHSV,lowerBound,upperBound)
+    #morphology
+    maskOpen=cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernelOpen)
+    maskClose=cv2.morphologyEx(maskOpen,cv2.MORPH_CLOSE,kernelClose)
+
+    maskFinal=maskClose
+    conts,h=cv2.findContours(maskFinal.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+
+    return conts
+
+
+def backToMain(event):
+    if event.type == pygame.QUIT:
+        return True
+    if event.type == pygame.KEYDOWN:
+        return True
+    return False
