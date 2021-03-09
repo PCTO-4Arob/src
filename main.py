@@ -3,6 +3,7 @@ import sys
 import pygame
 from Libraries.startMenu.startMenu import menu
 from GraphicMain.gameDesign import mainGraphic
+from config import *
 pygame.init()
 
 def main():
@@ -11,7 +12,7 @@ def main():
     exitGame = -1
     silent = False
     global screen
-    screen = pygame.display.set_mode((1000,600))
+    screen = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
 
     while exitMenu != 0:
        

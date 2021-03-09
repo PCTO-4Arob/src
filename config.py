@@ -1,0 +1,4 @@
+DIMCOW=(310, 510)# dimension of cowboy image
+DIMTOMB=(300, 300)
+WINDOW_WIDTH = 1000
+WINDOW_HEIGHT = 600
