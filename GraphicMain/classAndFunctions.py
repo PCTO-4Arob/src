@@ -249,7 +249,6 @@ def controlExit(event):
         sys.exit()
 
 
-<<<<<<< HEAD
 #this function riproduce a given jingle
 def riproduceJingle(path):
     jingle = pygame.mixer.Sound(path)
@@ -294,7 +293,6 @@ def backToMain(event):
     if event.type == pygame.KEYDOWN:
         return True
     return False
-=======
 
 def main():
     global screen
@@ -327,4 +325,3 @@ def main():
 
 if __name__ == '__main__':
     main()
->>>>>>> main
