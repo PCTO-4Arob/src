@@ -14,6 +14,7 @@ import sys
 import pygame
 from Libraries.startMenu.startMenu import menu
 from GraphicMain.gameDesign import mainGraphic
+from GraphicMain.calibration import calibrationTest
 from config import *
 
 #initialize pygame
@@ -42,6 +43,7 @@ def main():
         if exitMenu == 0:
             exit(0)
         elif exitMenu == 1: #otherwise it starts the gameplay window
+            calibrationTest()
             mainGraphic(screen, silent)
 
 
