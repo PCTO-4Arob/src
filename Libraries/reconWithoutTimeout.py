@@ -1,4 +1,10 @@
-import speech_recognition as sr
+'''
+DEPRECATED
+
+all of this code is writed directly in menu function
+'''
+
+import speech_recognition as sr #import speech recognition (we use google cloud)
 
 recognizer = sr.Recognizer()
 

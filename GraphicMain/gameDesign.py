@@ -1,79 +1,184 @@
+'''
+class and functions for the gameDesign file
+
+Our github page: https://github.com/PCTO-OneTwoCode
+'''
+
+#################
+
+# INCLUDE LIBRARIES
+
+############
 import pygame
 import numpy as np
 import datetime
 import sys
 import cv2
 import importlib
-from pygame.locals import *
 from time import sleep
+from pygame.locals import *
 from GraphicMain.operations import *
 from GraphicMain.classAndFunctions import *
-from GraphicMain.final_animation import final_animation
-
 import os
 
+#this variable contains the absolute path of this python file
 pathname = os.path.dirname(os.path.realpath(__file__))
 
 
+###################################
+
+# FUNCTIONS
+
+##################################
+
+#this function controls if the precedent blue object position is enough distant from the corrent one
+def controlCord(answer, prec_answer):
+    if prec_answer.getCordY() - answer.getCordY() <= 200 and prec_answer.getCordX() - answer.getCordX() <= 200:
+       return True
+    else: return False
 
 
-DIMCOW=(310, 510)# dimension of cowboy image
-DIMTOMB=(300, 300)
+#this function replaces a cowboy sprite with a tombstone
+def finalShoot(all_sprites, spr_ToChange):
+    tombstone = pygame.sprite.Sprite(all_sprites)
+    #load the sprite image
+    tombstone.image = pygame.image.load(os.path.join(pathname ,"Sprites/tombstone.png")).convert_alpha()
+    tombstone.rect = spr_ToChange.image.get_rect()
+    #set the tombstone x and y coordinates
+    tombstone.rect.x = spr_ToChange.rect.x 
+    tombstone.rect.y = spr_ToChange.rect.y + (DIMCOW[1]-DIMTOMB[1])
+    #remove the dead cowboy sprite
+    spr_ToChange.kill()
+    return all_sprites
 
 
+#prints a group of sprite on the screen
+def print_group(group,screen):
+    for sprite in group:
+        screen.blit(sprite.image, (sprite.rect.x,sprite.rect.y))
+    pygame.display.update()
+        
+
+#this function is called at the end of the game
+#the loser cowboy is killed by the winner 
+def final_animation( screen, surf_title, winRed, all_sprites,spr_red, spr_blue,numberSpriters):
+
+    #turn the red cowboy to right
+    spr_redReverse = pygame.sprite.Sprite(all_sprites)
+    spr_redReverse.image = pygame.image.load(os.path.join(pathname, "Sprites/redCowBoyInverted.png")).convert_alpha()
+    spr_redReverse.rect = spr_red.image.get_rect()
+    spr_redReverse.rect.x = spr_red.rect.x 
+    spr_redReverse.rect.y = spr_red.rect.y
+    #remove the not inverted cowboy  
+    spr_red.kill()
 
 
-def graficaPricipale():
+    #turn the blue cowboy to left
+    spr_blueReverse = pygame.sprite.Sprite(all_sprites)
+    spr_blueReverse.image = pygame.image.load(os.path.join(pathname, "Sprites/blueCowBoy.png")).convert_alpha()
+    spr_blueReverse.rect = spr_blue.image.get_rect()
+    spr_blueReverse.rect.x = spr_blue.rect.x 
+    spr_blueReverse.rect.y = spr_blue.rect.y 
+    #remove the not inverted cowboy
+    spr_blue.kill()
+
+    #update elements on the screen
+    surf_title.update(screen)
+    all_sprites.draw(screen)
+    numberSpriters.draw(screen)
+    print_group(all_sprites,screen)
+
+    #wait for 1 second
+    sleep(1)
+
+    #generate the GO signal, after it is printed one cowboy shoot the other one
+    number = pygame.sprite.Sprite(numberSpriters)
+    number.image = pygame.image.load(os.path.join(pathname, "Sprites/counter"+str(5)+".png")).convert_alpha()
+    number.image = pygame.transform.scale(number.image , (100,100))
+    number.rect = number.image.get_rect()
+    number.rect.x =WINDOW_WIDTH /2-(100/2)
+    number.rect.y =10
+
+
+    #update another time the screen 
+    surf_title.update(screen)
+    all_sprites.draw(screen)
+    numberSpriters.draw(screen)
+
+    #sleep another second (this create suspance)
+    sleep(1)
+
+    #one cowboy shoot, so the user hear a fire sound
+    fire = pygame.mixer.Sound(os.path.join(pathname, "theme/fire.wav"))#upload the gun sound
+    pygame.mixer.Sound.set_volume(fire,1)
+    pygame.mixer.Sound.play(fire)
     
+    #if the red wins, the blue is killed
+    if winRed:
+        all_sprites = finalShoot(all_sprites, spr_blueReverse)
+        winLabel = SimpleText(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 'YOU WIN!\npress a key')
+    else:
+        #on the contrary it replace red with a tombstone
+        all_sprites = finalShoot(all_sprites, spr_redReverse)
+        winLabel = SimpleText(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 'YOU LOSE :(\n press a key')
+
+    #the screen is update another time
+    winLabel.update(screen)
+    surf_title.update(screen)
+    all_sprites.draw(screen)
+    numberSpriters.draw(screen)
+    print_group(all_sprites,screen)
+
+    return
+
+
+
+def mainGraphic(screen, silent):
+    
+
+    #these are the color range detected by our opencv algorithm
     lowerBound=np.array([33,80,40])
     upperBound=np.array([102,255,255])
 
-    cam= cv2.VideoCapture(0)
+    #create a cam object to record live videos
+    cam = cv2.VideoCapture(0)
     cam.set(cv2.CAP_PROP_FRAME_WIDTH, WINDOW_WIDTH)
     cam.set(cv2.CAP_PROP_FRAME_HEIGHT, WINDOW_HEIGHT)
     kernelOpen=np.ones((5,5))
     kernelClose=np.ones((20,20))
-
-
-    listCord = [0, 0]
-
-    
-    x=1000 #dimensioni basi
-    y=600
-
-    #SCREEN TO COMMENT ALL---------------------------------------------------------------------------------------------------------------
-    
+   
+    #pygame initialization 
     pygame.init()
-    global screen
-    screen= pygame.display.set_mode((x, y))#create screen
     
     #song
-    a = pygame.mixer.Sound(os.path.join(pathname, "theme/fight.wav"))
-    pygame.mixer.Sound.set_volume(a,0.6)#0.6 is volume
-    pygame.mixer.Sound.play(a,-1)#with -1 sound will restart forever
+    soundTrack = pygame.mixer.Sound(os.path.join(pathname, "theme/fight.wav"))
+    pygame.mixer.Sound.set_volume(soundTrack,0.4)#0.6 is volume
+    if not silent: pygame.mixer.Sound.play(soundTrack,-1)#with -1 sound will restart forever
 
-    #CREATION SPRITES-------------------------------------------------------------------------------------------------------
+    #sprite creation
+
+    #here it creates two group of sprites
     all_sprites = pygame.sprite.Group()
     numberSpriters=pygame.sprite.Group()
 
     #red cowboy
     spr_red = pygame.sprite.Sprite(all_sprites)
-    spr_red.image = pygame.image.load(os.path.join(pathname, "Sprites/redCowBoy.png")).convert_alpha()
+    spr_red.image = pygame.image.load(os.path.join(pathname, "Sprites/redCowBoyYou.png")).convert_alpha()
 
     spr_red.rect = spr_red.image.get_rect()
 
-    #position
+    #set position
     spr_red.rect.x = WINDOW_WIDTH/2-DIMCOW[0] 
     spr_red.rect.y = WINDOW_HEIGHT-DIMCOW[1]
 
-
+    
 
     #blue cowboy
     spr_blue = pygame.sprite.Sprite(all_sprites)
     spr_blue.image = pygame.image.load(os.path.join(pathname, "Sprites/blueCowBoyInverted.png")).convert_alpha()
     spr_blue.rect = spr_red.image.get_rect()
 
-    #position
+    #set position
     spr_blue.rect.x = WINDOW_WIDTH / 2 
     spr_blue.rect.y = WINDOW_HEIGHT-DIMCOW[1]
     
@@ -81,25 +186,33 @@ def graficaPricipale():
     #background 
     surf_title = Background(WINDOW_WIDTH, WINDOW_HEIGHT, os.path.join(pathname, 'Background/sfondo.jpg'))  
    
-    #screen.blit(surf_tile, (0, 0))#show the background
-    count=1# count  will be use to stroke for cowboy
+    #this count the number of answered questions
+    count=1
     
+    #this variable manage the finite state diagram that control game events
     gameStatus = 0
 
+    #if move is true, the cowboys move
     move = False
+    #if selected_question is true, the user has to select an anwer
     selected_question = False
+    #if answered is true, the algorithm generate a new question for the user
     answered = False
+    #this variable let us cronometer the answer time
     timer = False
+    #if winred is equal to 1, the red cowboy wins
     winRed = 1
 
-    while count > 0 and count <= 5:
-        #drawing sprites     
+    #if the user answer 4 question, the cicle end 
+    while count > 0 and count < 5:
         #draw these two group of sprites
         surf_title.update(screen)
         all_sprites.draw(screen)
         numberSpriters.draw(screen)
         
-        if gameStatus == 0 and count < 5:
+        #finite state diagram
+
+        if gameStatus == 0:
             question, result = initQuestion()
             question.update(screen)
             gameStatus = 1
@@ -122,118 +235,119 @@ def graficaPricipale():
                 answered = False
                 selected_question = False
         
-        ret, img=cam.read()
-        img=cv2.resize(img,(WINDOW_WIDTH,WINDOW_HEIGHT))
 
-        #convert BGR to HSV
-        imgHSV= cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
-        # create the Mask
-        mask=cv2.inRange(imgHSV,lowerBound,upperBound)
-        #morphology
-        maskOpen=cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernelOpen)
-        maskClose=cv2.morphologyEx(maskOpen,cv2.MORPH_CLOSE,kernelClose)
+        #read frame from the camera
+        _, img=cam.read()
+        #resize the image
+        img = cv2.resize(img,(WINDOW_WIDTH,WINDOW_HEIGHT))
+        #flip the image horizontally
+        img = cv2.flip(img, 1)
+        #calculate the counturs of the image
+        conts = calculateCountours(img, lowerBound, upperBound, kernelClose, kernelOpen)
+        #calculate the maximum blue rectangle found
+        max_dim = calculateMaxDim(conts)
 
-        maskFinal=maskClose
-        conts,h=cv2.findContours(maskFinal.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
 
-        cv2.drawContours(img,conts,-1,(255,0,0),3)
-
-        max_dim = [0, 0, 0, 0]
-        for element in conts:
-            x,y,w,h=cv2.boundingRect(element)
-            if x + w > max_dim[1]:
-                max_dim[0] = x
-                max_dim[1] = x + w
-                max_dim[2] = y
-                max_dim[3] = y + h
-
+        #if the rectangle width isn't bigger than 400px, the algorithm doesn't run
         if max_dim[1] >= 400:
-            cv2.rectangle(img,(max_dim[0],max_dim[2]),(max_dim[1],max_dim[3]),(0,0,255), 2)
 
-        center_x = max_dim[0] + ((max_dim[1] - max_dim[0]) / 2)
-        center_y = max_dim[2] + ((max_dim[3] - max_dim[2]) / 2) 
+            #this calculate the center of the rectangle
+            center_x = max_dim[0] + ((max_dim[1] - max_dim[0]) / 2)
+            center_y = max_dim[2] + ((max_dim[3] - max_dim[2]) / 2) 
 
-
-        listCord[0] = center_x
-        listCord[1] = center_y
-            
-            
-        if listCord != [0,0]:
-            xClick = listCord[0]
-            yClick = listCord[1]
-            if question.collide(x,y) and not selected_question:
+            #if the user select a question the timer start
+            if question.collide(center_x,center_y) and not selected_question:
                 if not timer:
                     timer = True
                     start_time = datetime.datetime.now()
                 elif datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
+                    #when the timer end selected_question is true, so the user has to select the answer
                     selected_question = True
                     timer = False
+                    firstAnswer = True
+            
+            #if the user has to answer the timer start
             if not answered and selected_question:
-                for answer in answers:
-                    if answer.collide(x,y) and not answered:
-                        print(answer.getText())
-                        if not timer:
-                            timer = True
-                            start_time = datetime.datetime.now()
-                        elif datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
-                            if answer.isCorrect(result):
+                if not timer:
+                    start_time = datetime.datetime.now()
+                    timer = True
+                else:
+                    #for each answer it controls if the user has selected it
+                    for answer in answers:
+                        #if it is the first answer after choosing a question, it set prec_answer as answer 
+                        if firstAnswer:
+                            prec_answer = answer
+                            firstAnswer = False
+                        #if the answer collide with the user, the selected answer change color and become yellow
+                        if answer.collide(center_x,center_y) and not answered and controlCord(answer, prec_answer):
+                            prec_answer = answer
+                            answer.changeColor((255,255,0))
+                            pygame.display.update()
+                        else:
+                            answer.changeColor((255,255,255))
+                        
+                        #if the 5 second timer ends, the jingle is riproduced. The jingle is positive if the answer
+                        #is correct, or negative if the answer is wrong
+                        if datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5) and not answered:
+                            if answer.isCorrect(result) and answer.collide(center_x,center_y):
                                 answered = True
-                                jingle = pygame.mixer.Sound(os.path.join(pathname, 'theme/correctAnswer.wav'))
-                                pygame.mixer.Sound.set_volume(jingle, 1)
-                                pygame.mixer.Sound.play(jingle)
+                                riproduceJingle(os.path.join(pathname, 'theme/correctAnswer.wav'))
                             else:
-                                jingle = pygame.mixer.Sound(os.path.join(pathname, 'theme/wrongAnswer.wav'))
-                                pygame.mixer.Sound.set_volume(jingle, 1)
-                                pygame.mixer.Sound.play(jingle)
+                                riproduceJingle(os.path.join(pathname, 'theme/wrongAnswer.wav'))
                                 winRed = 0
+                                #if the answer is wrong the count is set to 5, so the while loop ends
                                 count = 5
+                                
                             timer = False
-            
-            
-            
-        cv2.imshow("cam",img)
-        cv2.waitKey(10)
+                            firstAnswer = True
+                            selected_question = False
+                        #end if
+                    #end for
+                #end if
+            #end if                    
+                
+            #draw on the pygame screen the user position
+            rect = pygame.Rect(max_dim[0], max_dim[2], max_dim[1], max_dim[3])
+            pygame.draw.rect(screen,WHITE, rect,1) 
+            cv2.waitKey(10)
+        
+        #end if
 
 
         pygame.display.flip()
         for event in pygame.event.get():
-            if event.type==pygame.QUIT:#if you quit program will not cush
-                pygame.quit()
-                sys.exit()
+            controlExit(event)
 
+        #move cowboys 
+        if move:
+            spr_blue.rect.x += int(WINDOW_WIDTH/20)#
+            spr_red.rect.x -= int(WINDOW_WIDTH/20)#
+            move = False
         
+        #increment number counter sprite
+        number = pygame.sprite.Sprite(numberSpriters)
+        number.image = pygame.image.load(os.path.join(pathname, "Sprites/counter"+str(count)+".png")).convert_alpha()
+        number.image = pygame.transform.scale(number.image , (100,100))
+        number.rect = number.image.get_rect()
+        number.rect.x = WINDOW_WIDTH /2-(100/2)
+        number.rect.y =10
             
-        if count<5 and count>0:
-            #COWBOYS POSISTION CHANGES--------------------------------------------------------------------------------------- 
-            if move:
-                spr_blue.rect.x += int(WINDOW_WIDTH/20)#RIGHT
+    #end while loop       
 
-                spr_red.rect.x -= int(WINDOW_WIDTH/20)#LEFT
-                move = False
-            
-            #number counter-------------------------------------------------------------------------------------------
-            
-            number = pygame.sprite.Sprite(numberSpriters)
-            number.image = pygame.image.load(os.path.join(pathname, "Sprites/counter"+str(count)+".png")).convert_alpha()
-            number.image = pygame.transform.scale(number.image , (100,100))
-            number.rect = number.image.get_rect()
-            number.rect.x = WINDOW_WIDTH /2-(100/2)
-            number.rect.y =10
-            
-           
-    
-        elif count==5:
-            #TURN COWBOY-----------------------------------------------------------------
-            cv2.destroyAllWindows()
-            pygame.mixer.music.stop()#stop music
-            count=0
-        
-    #end while
-    pygame.quit()
-    
-    #final_animation((spr_blue.rect.x, spr_blue.rect.y), (spr_red.rect.x, spr_red.rect.y), winRed)
+    #turns the cowboys
+    final_animation(screen,surf_title,winRed,all_sprites,spr_red,spr_blue,numberSpriters)
+
+    #stop the music
+    pygame.mixer.music.stop()#stop music
+    pygame.mixer.Sound.stop(soundTrack)
+
+    #while the user doesn't press a key, the program doesn't end
+    endGame = False
+    while not endGame:
+        for event in pygame.event.get():
+            controlExit(event)
+            if backToMain(event): 
+                endGame = True
+
     return 0
-#end main
-
-if __name__ == "__main__":
-	main()
+#end mainGraphic
