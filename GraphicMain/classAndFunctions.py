@@ -31,11 +31,10 @@ pygame.init()
 
 #white rgb code
 WHITE = (255,255,255)
-<<<<<<< HEAD
+
 #blue rgb code
 BLUE = (0,0,255)
 =======
->>>>>>> main
 
 #this list contains the 4 answers position on the screen
 POSSIBLE_POSITIONS = [(WINDOW_WIDTH/4-200, WINDOW_HEIGHT/4),
@@ -303,8 +302,6 @@ def backToMain(event):
         return True
     return False
 
-<<<<<<< HEAD
-
 #this function returns the average color value of the image center
 def getAverageColor(img, size_percentage=30):
     # Get image size
@@ -342,7 +339,7 @@ def getAverageColor(img, size_percentage=30):
     average_value = np.uint8([[[average_value[0],average_value[1],average_value[2]]]]) 
     
     return average_value
-=======
+
 def main():
     global screen
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -374,4 +371,3 @@ def main():
 
 if __name__ == '__main__':
     main()
->>>>>>> main
