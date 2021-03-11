@@ -270,45 +270,50 @@ def mainGraphic(screen, silent, lowerBound):
                 if not timer:
                     start_time = datetime.datetime.now()
                     timer = True
+                    print('ciao', start_time)
                 else:
-                    #for each answer it controls if the user has selected it
-                    for answer in answers:
-                        #if it is the first answer after choosing a question, it set prec_answer as answer 
-                        if firstAnswer:
-                            prec_answer = answer
-                            firstAnswer = False
-                        #if the answer collide with the user, the selected answer change color and become yellow
-                        if answer.collide(center_x,center_y) and not answered and controlCord(answer, prec_answer):
-                            prec_answer = answer
-                            answer.changeColor((255,255,0))
-                            pygame.display.update()
-                        else:
-                            answer.changeColor((255,255,255))
-                        
-                        #if the 5 second timer ends, the jingle is riproduced. The jingle is positive if the answer
-                        #is correct, or negative if the answer is wrong
-                        if datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5) and not answered:
+                    if datetime.datetime.now() >= start_time + datetime.timedelta(seconds=5):
+                        for answer in answers:
                             if answer.isCorrect(result) and answer.collide(center_x,center_y):
                                 answered = True
                                 riproduceJingle(os.path.join(pathname, 'theme/correctAnswer.wav'))
+                                winRed = 1
+                                break
                             else:
                                 riproduceJingle(os.path.join(pathname, 'theme/wrongAnswer.wav'))
                                 winRed = 0
-                                #if the answer is wrong the count is set to 5, so the while loop ends
-                                count = 5
-                                
-                            timer = False
-                            firstAnswer = True
-                            selected_question = False
-                        #end if
-                    #end for
+                        
+                        timer = False
+                        firstAnswer = True
+                        selected_question = False
+
+                        if winRed == 0:
+                            #if the answer is wrong the count is set to 5, so the while loop ends
+                            count = 5
+                    
+                    else:
+                        #for each answer it controls if the user has selected it
+                        for answer in answers:
+                            #if it is the first answer after choosing a question, it set prec_answer as answer 
+                            if firstAnswer:
+                                prec_answer = answer
+                                firstAnswer = False
+                            #if the answer collide with the user, the selected answer change color and become yellow
+                            if answer.collide(center_x,center_y):
+                                answer.changeColor((255,255,0))
+                                pygame.display.update()
+                            else:
+                                answer.changeColor((255,255,255))
+                            
+                        #end for
+                    #end if
                 #end if
             #end if                    
                 
             #draw on the pygame screen the user position
-            rect = pygame.Rect(center_x - (WINDOW_WIDTH//6), center_y - (WINDOW_HEIGHT//4), center_x + (WINDOW_WIDTH//6), center_y + (WINDOW_HEIGHT//4))
-            pygame.draw.rect(screen, BLUE, rect, 3) 
-            cv2.rectangle(img, (max_dim[0], max_dim[2]), (max_dim[1], max_dim[3]), 10)
+            rect = pygame.Rect(center_x - (WINDOW_WIDTH//6), center_y - (WINDOW_HEIGHT//4), WINDOW_WIDTH//6, WINDOW_HEIGHT//4)
+            pygame.draw.rect(screen, BLUE, rect, 10) 
+            cv2.rectangle(img, (max_dim[0], max_dim[2]), (max_dim[1], max_dim[3]), 30)
             cv2.imshow('opencv', img)
             
             cv2.waitKey(10)
