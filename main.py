@@ -15,7 +15,7 @@ import pygame
 from Libraries.startMenu.startMenu import menu
 from GraphicMain.gameDesign import mainGraphic
 from GraphicMain.calibration import calibrationTest
-from internetConnectionTest import connect
+from Libraries.internetConnectionTest import connect
 from config import *
 
 #initialize pygame
