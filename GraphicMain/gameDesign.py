@@ -313,8 +313,7 @@ def mainGraphic(screen, silent, lowerBound):
             #draw on the pygame screen the user position
             rect = pygame.Rect(center_x - (WINDOW_WIDTH//6), center_y - (WINDOW_HEIGHT//4), WINDOW_WIDTH//6, WINDOW_HEIGHT//4)
             pygame.draw.rect(screen, BLUE, rect, 10) 
-            cv2.rectangle(img, (max_dim[0], max_dim[2]), (max_dim[1], max_dim[3]), 30)
-            cv2.imshow('opencv', img)
+            
             
             cv2.waitKey(10)
         
