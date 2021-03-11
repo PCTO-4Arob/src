@@ -14,10 +14,7 @@ import pygame, sys
 import random
 import os
 import cv2
-<<<<<<< HEAD
 import numpy as np
-=======
->>>>>>> main
 from time import sleep
 from pygame.locals import *
 from GraphicMain.operations import *
@@ -34,7 +31,6 @@ WHITE = (255,255,255)
 
 #blue rgb code
 BLUE = (0,0,255)
-=======
 
 #this list contains the 4 answers position on the screen
 POSSIBLE_POSITIONS = [(WINDOW_WIDTH/4-200, WINDOW_HEIGHT/4),
