@@ -32,9 +32,11 @@ def calibrationTest():
             if max_dim[0] <= 350 and max_dim[1] >= 650:
                 if max_dim[2] <= 250 and max_dim[3] >= 400:
                     if max_dim[2] >= 200 and max_dim[3] <= 450:
+                        new_lower_bound = getAverageColor(img)
                         ok = True
         
         cv2.imshow('calibration', img)
         cv2.waitKey(10)
     
     cv2.destroyAllWindows()
+    return lowerBound

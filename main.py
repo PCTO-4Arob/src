@@ -15,6 +15,7 @@ import pygame
 from Libraries.startMenu.startMenu import menu
 from GraphicMain.gameDesign import mainGraphic
 from GraphicMain.calibration import calibrationTest
+from Libraries.internetConnectionTest import connect
 from config import *
 
 #initialize pygame
@@ -23,6 +24,13 @@ pygame.init()
 
 
 def main():
+
+    #before we start the game we check the internet connection
+    if not connect():
+        print('run-time error: no internet connection')
+        return -1
+
+
     #this variable contains the returned value from the start menu
     exitMenu = -1
     #this variable contains the returned value from the game
@@ -43,15 +51,10 @@ def main():
         if exitMenu == 0:
             exit(0)
         elif exitMenu == 1: #otherwise it starts the gameplay window
-            calibrationTest()
-            mainGraphic(screen, silent)
+            lowerBound = calibrationTest()
+            mainGraphic(screen, silent, lowerBound)
 
 
 #this run the main function
 if __name__ == "__main__":
     main()
-
-
-
-
-

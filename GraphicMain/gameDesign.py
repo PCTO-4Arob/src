@@ -133,11 +133,10 @@ def final_animation( screen, surf_title, winRed, all_sprites,spr_red, spr_blue,n
 
 
 
-def mainGraphic(screen, silent):
+def mainGraphic(screen, silent, lowerBound):
     
 
     #these are the color range detected by our opencv algorithm
-    lowerBound=np.array([33,80,40])
     upperBound=np.array([102,255,255])
 
     #create a cam object to record live videos
@@ -307,8 +306,11 @@ def mainGraphic(screen, silent):
             #end if                    
                 
             #draw on the pygame screen the user position
-            rect = pygame.Rect(max_dim[0], max_dim[2], max_dim[1], max_dim[3])
-            pygame.draw.rect(screen,WHITE, rect,1) 
+            rect = pygame.Rect(center_x - (WINDOW_WIDTH//6), center_y - (WINDOW_HEIGHT//4), center_x + (WINDOW_WIDTH//6), center_y + (WINDOW_HEIGHT//4))
+            pygame.draw.rect(screen, BLUE, rect, 3) 
+            cv2.rectangle(img, (max_dim[0], max_dim[2]), (max_dim[1], max_dim[3]), 10)
+            cv2.imshow('opencv', img)
+            
             cv2.waitKey(10)
         
         #end if
