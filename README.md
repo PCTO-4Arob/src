@@ -5,7 +5,7 @@
 
 We are developing a **western timed math quiz** written in python using pygame for the graphical interface.
 
-To receive the input from the player we use a tracking function in openCV that we use like a mouse. The player have max 5 second to move on the operation that come in a random position in the screen, then the player have 4 possible solution to use and if he select the right one the game will prompt another expression.
+To receive the input from the player we use a tracking function in openCV which we use like a mouse. The player have max 5 second to move on the operation that come in a random position in the screen, then the player have 4 possible solution to use and if he select the right one the game will prompt another expression.
 
 The game finish when the player select the wrong answer (he lose) or when the player select right answer 5 times (he win).
 
