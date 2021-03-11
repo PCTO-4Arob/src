@@ -9,8 +9,10 @@ To receive the input from the player we use a tracking function in openCV that w
 
 The game finish when the player select the wrong answer (he lose) or when the player select right answer 5 times (he win).
 
-<img title="" src="https://cdn.discordapp.com/attachments/816631707817869323/816631940874502175/unknown.png" alt="" width="487" data-align="center">
+<img title="" src="https://cdn.discordapp.com/attachments/816631707817869323/818759201119404042/unknown.png" alt="" width="487" data-align="center">
 
-<img title="" src="https://cdn.discordapp.com/attachments/816631707817869323/816631920204316702/unknown.png" alt="" data-align="center" width="489">
+<img title="" src="https://cdn.discordapp.com/attachments/816631707817869323/818757123612737567/unknown.png" alt="" data-align="center" width="487">
 
-<img title="" src="https://cdn.discordapp.com/attachments/816631707817869323/816632039700037632/unknown.png" alt="" data-align="center" width="493">
+<img title="" src="https://cdn.discordapp.com/attachments/816631707817869323/818757244630859796/unknown.png" alt="" data-align="center" width="487">
+
+<img title="" src="https://cdn.discordapp.com/attachments/816631707817869323/816632039700037632/unknown.png" alt="" data-align="center" width="487">
