@@ -52,8 +52,6 @@ elif [ "${OS}" = "Linux" ] ; then
             $(sudo apt install -y python3-pip >> log.txt 2>&1)
             echo Installing necessary packages:
             $(sudo pip install -r requirements.txt >> log.txt 2>&1)
-	    echo installing Git
-	    $(sudo apt install git)
 		else
 			DIST="Debian $(cat /etc/debian_version)"
 			REV=""
@@ -67,8 +65,6 @@ elif [ "${OS}" = "Linux" ] ; then
             $(sudo apt install -y python3-pip >> log.txt 2>&1)
             echo Installing necessary packages:
             $(sudo pip install -r requirements.txt >> log.txt 2>&1)
-	    echo installing Git
-	    $(sudo apt install git >> log.txt 2>&1)
 		fi
 	elif [ -f /etc/arch-release ] ; then
 		DIST="Arch"
@@ -81,8 +77,6 @@ elif [ "${OS}" = "Linux" ] ; then
         $(sudo pacman -S python-pip --noconfirm>> log.txt 2>&1)
         echo Installing necessary packages:
         $(sudo pip install -r requirements.txt >> log.txt 2>&1)
-	echo installing Git
-	$(sudo pacman -S git --no-confirm >> log.txt 2>&1)
 	fi
 	if [ -f /etc/UnitedLinux-release ] ; then
 		DIST="${DIST}[$(tr "\n" ' ' < /etc/UnitedLinux-release | sed s/VERSION.*//)]"
