@@ -1,6 +1,8 @@
 <img title="" src="https://cdn.discordapp.com/attachments/815644475661090819/816624278493593620/LogoPNG.png" alt="" width="333" data-align="center">
 
-![Issue](https://badgen/github/issues/micromatch/micromatch
+![Python 3.8](https://badgen.net/badge/python/3.8/3776ab)
+![License](https://badgen.net/badge/license/GPL-3.0/blue)
+![issue](https://badgen.net/github/issues/PCTO-OneTwoCode/src)
 
 # One Two Code :unicorn:
 
