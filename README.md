@@ -1,5 +1,7 @@
 <img title="" src="https://cdn.discordapp.com/attachments/815644475661090819/816624278493593620/LogoPNG.png" alt="" width="333" data-align="center">
 
+![Issue](https://badgen/github/issues/micromatch/micromatch
+
 # One Two Code :unicorn:
 
 
