@@ -2,6 +2,10 @@
 
 # Math Bullet
 
+![Python 3.8](https://badgen.net/badge/python/3.8/3776ab)
+![License](https://badgen.net/badge/license/GPL-3.0/blue)
+![issue](https://badgen.net/github/issues/PCTO-OneTwoCode/src)
+
 ## Our game
 
 Our team is committed to the creation of a game to make more fun and inclusive rehabilitation activities for people with **multiple sclerosis**.
