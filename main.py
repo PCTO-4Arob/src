@@ -18,6 +18,7 @@ from GraphicMain.calibration import calibrationTest
 from Libraries.internetConnectionTest import connect
 from config import *
 
+
 #initialize pygame
 pygame.init()
 
